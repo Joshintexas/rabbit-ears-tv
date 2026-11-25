@@ -5,61 +5,6 @@
 // allowed in seconds) or lists hand-picked items: [archive.org identifier, display title, year].
 // hours: [start, end] broadcasts only between those local hours. adult: true asks for 18+ first.
 
-const SPACE_CADETS = [
-  ['space-patrol-s-01e-01-low-480x-360p', 'Space Patrol: Web of Arachna', '1950s'],
-  ['commandocodyskymarshaloftheuniverses01e03cosmicvengeance', 'Commando Cody: Enemies of the Universe', '1955'],
-  ['TheSpaceAdventuresOfFlashGordon_981', 'The Space Adventures of Flash Gordon', '1954'],
-  ['rockyJonesSpaceRangerBeyondTheCurtainOfSpace1954', 'Rocky Jones, Space Ranger: Beyond the Curtain of Space', '1954'],
-  ['SpacePatrolS03e28MysteriousOceansInSpace', 'Space Patrol: Mysterious Oceans in Space', '1953'],
-  ['GracieAllenSpaceGirls', 'Burns and Allen: The Space Patrol Kids Visit', '1951'],
-  ['Space-Patrol-TheDeadlyRayGun', 'Space Patrol: The Deadly Ray Gun', '1951'],
-  ['rockyJonesSpaceRangerRockysOdyssey1954', 'Rocky Jones, Space Ranger: Rocky’s Odyssey', '1954'],
-  ['CommandoCodySkyMarshallOfTheUniversePart1_458', 'Commando Cody: Sky Marshal of the Universe, Part 1', '1955'],
-];
-
-const RINGSIDE = [
-  ['1949-RollerDerby-NewYorkVsPhiladelphia', 'Roller Derby: New York vs. Philadelphia', '1949'],
-  ['YulieBrynnerVsRoseRoman', 'Chicago Wrestling: Yulie Brynner vs. Rose Roman', '1950'],
-  ['1950-RollerDerby-NewJerseyVsPhiladelphia', 'Roller Derby: New Jersey vs. Philadelphia', '1950'],
-  ['04-wrestling-women-vs-the-aztec-mummy-1964-dub', 'Wrestling Women vs. the Aztec Mummy', '1964'],
-  ['1952-RollerDerby-TheChiefsVsTheRedDevils_383', 'Roller Derby: The Chiefs vs. the Red Devils', '1952'],
-  ['1950-RollerDerby-NewJerseyVsBrooklyn', 'Roller Derby: New Jersey vs. Brooklyn', '1950'],
-];
-
-const PRIME_TIME_TRASH = [
-  ['Queen_For_A_Day', 'Queen for a Day', '1960'],
-  ['RacketSquadTheSaltedMine1951', 'Racket Squad: The Salted Mine', '1951'],
-  ['You_Bet_Your_Life_Groucho', 'You Bet Your Life, with Groucho Marx', '1950s'],
-  ['RacketSquadTheCaseOfTheTwoLittleCountryGirls', 'Racket Squad: The Two Little Country Girls', '1951'],
-  ['1958EpisodeOfqueenForADay', 'Queen for a Day', '1958'],
-  ['RacketSquadKiteHigh', 'Racket Squad: Kite High', '1951'],
-  ['RacketSquadAccidentallyOnPurpose', 'Racket Squad: Accidentally on Purpose', '1951'],
-  ['queenforaday1963', 'Queen for a Day', '1963'],
-  ['RacketSquadTheBillOfSaleRacket', 'Racket Squad: The Bill of Sale Racket', '1951'],
-];
-
-const DRIVE_IN = [
-  ['Plan9FromOuterSpaceTrailer', 'Trailer: Plan 9 from Outer Space', ''],
-  ['plan-9-from-outer-space', 'Plan 9 from Outer Space', '1959'],
-  ['RobotMonster-Trailer', 'Trailer: Robot Monster', ''],
-  ['robot-monster-1953', 'Robot Monster', '1953'],
-  ['ManosTheHandsofFate', 'Manos: The Hands of Fate', '1966'],
-  ['KillerShrews-Trailer', 'Trailer: The Killer Shrews', ''],
-  ['The_Killer_Shrews', 'The Killer Shrews', '1959'],
-  ['teenagers_from_outerspace', 'Teenagers from Outer Space', '1959'],
-  ['BrideOfTheMonster-Trailer', 'Trailer: Bride of the Monster', ''],
-  ['bride-of-the-monster-1955', 'Bride of the Monster', '1955'],
-  ['Beast_of_Yucca_Flats_movie', 'The Beast of Yucca Flats', '1961'],
-  ['cco_attackofthegiantleeches', 'Attack of the Giant Leeches', '1959'],
-  ['TheCreepingTerrorTrailer', 'Trailer: The Creeping Terror', ''],
-  ['TheCreepingTerror', 'The Creeping Terror', '1964'],
-  ['giant_gila_monster', 'The Giant Gila Monster', '1959'],
-  ['TheRobotVs.TheAztecMummylaMomiaAztecaControElRobotHumano1958-', 'The Robot vs. the Aztec Mummy', '1958'],
-  ['The_Amazing_Transparent_Man', 'The Amazing Transparent Man', '1960'],
-  ['the-sinister-urge-1960-edward-d.-wood-jr.-ed-wood-cult-b-movie-full-movie', 'The Sinister Urge', '1960'],
-  ['SantaClausConquerstheMartians1964', 'Santa Claus Conquers the Martians', '1964'],
-];
-
 const SPACE_BABES = [
   ['Cat-womenOfTheMoon-Trailer', 'Trailer: Cat-Women of the Moon', ''],
   ['CatWomenOfTheMoon', 'Cat-Women of the Moon', '1953'],
@@ -95,37 +40,6 @@ const BURLESQUE = [
   ['varietease-1954', 'Varietease, with Lili St. Cyr', '1954'],
   ['BettyPageAndHerHighHeeledShoes', 'Bettie Page and Her High-Heeled Shoes', '1950s'],
   ['LampOfMemory', 'Soundie: Lamp of Memory, with Yvonne De Carlo', '1944'],
-];
-
-// Soundies were 1940s jukebox films: the first music videos.
-const JUKEBOX = [
-  ['1083SoundieMinnieTheMoocherCabCalloway', 'Cab Calloway: Minnie the Moocher', '1942'],
-  ['SoundieF', 'Reg Kehoe and His Marimba Queens', '1940s'],
-  ['st-louis-blues-1929', 'Bessie Smith: St. Louis Blues', '1929'],
-  ['WhosYourHoot', 'Who’s Yehudi?', '1942'],
-  ['1083SoundieShineLouisArmstrong', 'Louis Armstrong: Shine', '1942'],
-  ['SoundieD', 'Zig Me Baby with a Gentle Zag', '1941'],
-  ['soundie_10', 'A Jazz Etude', '1941'],
-  ['black-and-tan_1929', 'Duke Ellington: Black and Tan', '1929'],
-  ['soundie_1', 'The Hut Sut Song', '1941'],
-  ['SoundieB', 'Six Hits & a Miss: Sweet Sue (Just You)', '1940s'],
-  ['soundie_8', 'Snader Telescription: Daddy', '1951'],
-  ['xd-38984c-official-films-african-americanand-southern-soundies-vwr', 'Soundies Reel: Cab Calloway, Louis Armstrong & More', '1940s'],
-  ['SoundieH', 'Beyond the Blue Horizon', '1944'],
-  ['1083SoundieContinentalConnieHaines', 'Connie Haines: Continental', '1940s'],
-  ['Havana-Madri_2', 'Havana-Madrid Show', '1941'],
-  ['SoundieM', 'You Can’t Marry Ten Pretty Girls', '1940s'],
-  ['0838_Musical_Review_11_Louis_Armstrong_Soundie_11_33_03_18', 'Musical Review #11, with Louis Armstrong', '1940s'],
-  ['soundie_4', 'Tica Ti Tica Ta', '1940s'],
-  ['SoundieJ', 'Stardust', '1940s'],
-  ['the-weavers-all-the-1951-videos', 'The Weavers: Snader Telescriptions', '1951'],
-  ['xd-13584-drink-hearty-veto-vwr', 'Soundies Reel: Fats Waller, Red Allen, Louis Armstrong', '1940s'],
-  ['SoundieK', 'It’s Got to Be This or That', '1945'],
-  ['1083SoundieSailboatInTheSkyJohnnieJohnston', 'Johnnie Johnston: Sailboat in the Sky', '1940s'],
-  ['soundie_6', 'Heaven Help a Sailor on a Night Like This', '1940'],
-  ['soundie-the-fashionaires-billy-reed', 'The Fashionaires: A Knife, a Fork and a Spoon', '1949'],
-  ['SoundieL', 'Lullaby of Broadway', '1940s'],
-  ['xd-44594-african-american-sounds-bessie-smith-vwr', 'Soundies Reel: Bessie Smith & 1930s Musical Shorts', '1930s'],
 ];
 
 const LAB_COAT = [
@@ -293,23 +207,6 @@ const SATURDAY = [
   ['clutchcargocartooonscollection', 'Clutch Cargo: The Missing Mermaid', '1959', 'Clutch Cargo The Missing Mermaid.mp4'],
 ];
 
-// Heroines tied to train tracks and left hanging at the end of every chapter.
-const DAMSELS = [
-  ["SerialchapterPlaystrailers", "Coming Attractions: Serial Trailers", "1930s–40s"],
-  ["BarneyOldfieldsRaceForALife1913_201403", "Barney Oldfield’s Race for a Life", "1913"],
-  ["THEPERILSOFPAULINE1914Ch.1PearlWhite", "The Perils of Pauline, Chapter 1", "1914"],
-  ["THEPERILSOFPAULINE1914Ch.2PearlWhite", "The Perils of Pauline, Chapter 2", "1914"],
-  ["THEPERILSOFPAULINE1914Ch.3PearlWhite", "The Perils of Pauline, Chapter 3", "1914"],
-  ["THEPERILSOFPAULINE1914Ch.4PearlWhite", "The Perils of Pauline, Chapter 4", "1914"],
-  ["hazards_of_helen_wild_engine", "The Hazards of Helen: The Wild Engine", "1915"],
-  ["THEPERILSOFPAULINE1914Ch.5PearlWhite", "The Perils of Pauline, Chapter 5", "1914"],
-  ["THEPERILSOFPAULINE1914Ch.6PearlWhite", "The Perils of Pauline, Chapter 6", "1914"],
-  ["THEPERILSOFPAULINE1914Ch.7PearlWhite", "The Perils of Pauline, Chapter 7", "1914"],
-  ["THEPERILSOFPAULINE1914Ch.8PearlWhite", "The Perils of Pauline, Chapter 8", "1914"],
-  ["THEPERILSOFPAULINE1914Ch.9PearlWhite", "The Perils of Pauline, Chapter 9", "1914"],
-  ["ThePerilsofPauline", "The Perils of Pauline, with Betty Hutton", "1947"],
-];
-
 // Musclemen, Amazon queens and captive women from Italian peplum epics.
 const SWORDS = [
   ["HerculesUnchained", "Hercules Unchained", "1959"],
@@ -321,36 +218,12 @@ const SWORDS = [
   ["Hercules_Against_the_Moon_Men", "Hercules Against the Moon Men", "1964"],
 ];
 
-const JUVIE = [
-  ['TheViolentYears', 'The Violent Years', '1956'],
-  ['0248_Are_You_Popular_E00020_19_00_34_00', 'Are You Popular?', '1947'],
-  ['CoolHotRodA', 'Cool Hot Rod', '1953'],
-  ['TeenageDevilDolls', 'Teenage Devil Dolls', '1955'],
-  ['GoingSte1951', 'Going Steady?', '1951'],
-  ['HowMuchA1958', 'How Much Affection?', '1958'],
-  ['GirlGang1954', 'Girl Gang', '1954'],
-  ['ShyGuy1947', 'Shy Guy', '1947'],
-  ['last_date', 'Last Date', '1949'],
-  ['AgeofTur1953', 'Age of Turmoil', '1953'],
-  ['WhatAbou1955', 'What About Juvenile Delinquency?', '1955'],
-  ['DatingDo1949_201805', 'Dating: Do’s and Don’ts', '1949'],
-];
-
-
 export const CHANNELS = [
   { num: 8,  slug: 'saturday',    name: 'Saturday Morning', tag: '80s toy & cereal ads, Superman, Clutch Cargo & Space Angel', items: SATURDAY },
-  { num: 11, slug: 'damsels',     name: 'Damsels in Distress', tag: 'Tied to the tracks: Perils of Pauline & silent cliffhangers', items: DAMSELS },
-  { num: 13, slug: 'creature',    name: 'Creature Feature', tag: 'Sci-fi & horror B-movies',                    q: 'collection:SciFi_Horror', n: 20, max: 7200 },
-  { num: 17, slug: 'juvie',       name: 'Juvie',            tag: 'Girl gangs, hot rods & going steady',         items: JUVIE },
   { num: 21, slug: 'labcoat',     name: 'Lab Coat',         tag: 'Mr. Wizard, Bell Science, NASA & Computer Chronicles', items: LAB_COAT },
   { num: 29, slug: 'ads',        name: 'Ad Break',         tag: 'Vintage commercials',                         q: 'collection:classic_tv_commercials', n: 40, max: 1800 },
-  { num: 31, slug: 'spacecadets', name: 'Space Cadets',     tag: 'Tin-foil space serials from early TV',        items: SPACE_CADETS },
-  { num: 33, slug: 'ringside',    name: 'Ringside',         tag: 'Roller derby, wrestling & luchadoras',        items: RINGSIDE },
-  { num: 35, slug: 'primetime',   name: 'Prime Time Trash', tag: 'Sob-story game shows & con-man crime TV',     items: PRIME_TIME_TRASH },
   { num: 38, slug: 'bombshell',   name: 'Bombshell',        tag: 'Marilyn, Jayne, jungle sirens & swamp women', items: BOMBSHELL },
-  { num: 45, slug: 'jukebox',     name: 'Jukebox',          tag: 'Soundies, Snader Telescriptions & early jazz shorts', items: JUKEBOX },
   { num: 51, slug: 'swords',      name: 'Sword & Sandal',   tag: 'Hercules, Amazon queens & captive women',     items: SWORDS },
-  { num: 61, slug: 'drivein',    name: 'Drive-In',         tag: 'Monster movies so bad they’re good',          items: DRIVE_IN },
   { num: 63, slug: 'spacebabes',  name: 'Space Babes',      tag: 'Cat-women, cave girls & B-movie bombshells',  items: SPACE_BABES },
   { num: 66, slug: 'vice',        name: 'Vice Squad',       tag: 'Reefer, cocaine & “sex hygiene” scare films', items: VICE_SQUAD },
   { num: 69, slug: 'nylons',      name: 'Nylons & Heels',   tag: 'Stockings, heels, burlesque queens, Bettie Page & Irving Klaw fetish reels. 18+', items: NYLONS, adult: true },

@@ -1,5 +1,7 @@
 # Rabbit Ears TV
 
+**Watch it:** https://joshintexas.github.io/rabbit-ears-tv/
+
 Always-on "cable TV" built from public-domain videos on the Internet Archive.
 Every viewer sees the same thing at the same moment. There's no server: each
 browser works out what's on from the clock.

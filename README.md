@@ -23,7 +23,7 @@ browser works out what's on from the clock.
 | 61 | Drive-In | Monster movies so bad they're good, with trailers |
 | 63 | Space Babes | Cat-women, cave girls and B-movie bombshells |
 | 66 | Vice Squad | Reefer, cocaine and "sex hygiene" scare films |
-| 69 | Nylons & Heels | 18+. Irving Klaw / Bettie Page fetish reels, pin-up and strip reels (Blaze Starr, Tempest Storm, Dixie Evans), girdle and hosiery ads. Age check first |
+| 69 | Nylons & Heels | 18+. Bettie Page dances, Irving Klaw fetish and catfight reels, burlesque queens (Blaze Starr, Tempest Storm, Georgia Sothern, Betty Rowland, Dixie Evans), Silk Stocking Parade, hosiery and girdle ads, Lady of Burlesque, Dr. Sex. Age check first |
 | 77 | Pre-Code | Racy early-30s Hollywood from before the censors arrived |
 | 88 | Burlesque | Strip-tease revues and cheesecake Soundies |
 | 99 | After Dark | 18+. Early-60s nudie and sexploitation films, Jayne Mansfield's uncut Too Hot to Handle, Ed Wood, shockers. Age check first |

@@ -72,10 +72,14 @@ a{color:var(--cyan)}
 .next span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .src{margin-top:auto;color:var(--dim);font-size:13px}
 
-.fast{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:6px max(3vw,14px) 18px;max-width:1500px;margin:0 auto}
+.fast{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) minmax(0,1.3fr);gap:8px;padding:6px max(3vw,14px) 18px;max-width:1500px;margin:0 auto}
 .fast button{min-height:48px;border:0;color:#000;font-size:24px;line-height:1;padding:6px}
 .fast .r{background:var(--red)}.fast .g{background:var(--green)}.fast .y{background:var(--yellow)}.fast .c{background:var(--cyan)}
 .fast small{display:block;font:12px "IBM Plex Mono",monospace;opacity:.7}
+.vol{display:flex;flex-direction:column;justify-content:center;gap:4px;min-height:48px;padding:6px 12px;background:var(--magenta);color:#000;font-size:24px;line-height:1}
+.vol span{display:flex;justify-content:space-between;align-items:baseline}
+.vol input{width:100%;margin:0;accent-color:#000;cursor:pointer;height:20px}
+.vol input:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
 
 .guide{border-top:6px solid var(--blue);padding:0 0 24px}
 .ghead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:16px max(3vw,14px) 10px;flex-wrap:wrap}
@@ -105,6 +109,7 @@ a{color:var(--cyan)}
 @media (max-width:600px){
   .tt h1{font-size:30px}.tt .pg{display:none}
   .grid{--lw:76px}.lab .nm{display:none}
+  .fast{grid-template-columns:repeat(4,minmax(0,1fr))}.vol{grid-column:1/-1;font-size:20px}
   .fast button{font-size:20px}.fast small{display:none}
 }
 @media (prefers-reduced-motion:reduce){.snow{transition:none}}
@@ -148,6 +153,7 @@ a{color:var(--cyan)}
   <button class="g" id="bUp">CH &#9650;<small>arrow up</small></button>
   <button class="y" id="bGuide">GUIDE<small>G</small></button>
   <button class="c" id="bSound">SOUND ON<small>M</small></button>
+  <label class="vol"><span>VOLUME <small id="volN">80</small></span><input type="range" id="vol" min="0" max="100" step="1" value="80" aria-label="Volume"></label>
 </nav>
 
 <section class="guide" id="guide">
@@ -156,7 +162,7 @@ a{color:var(--cyan)}
 </section>
 
 <footer class="foot">
-  <p class="keys">Remote: <kbd>&uarr;</kbd>/<kbd>&darr;</kbd> change channel &middot; type a channel number &middot; <kbd>M</kbd> sound &middot; <kbd>F</kbd> full screen &middot; <kbd>G</kbd> guide</p>
+  <p class="keys">Remote: <kbd>&uarr;</kbd>/<kbd>&darr;</kbd> change channel &middot; type a channel number &middot; <kbd>M</kbd> sound &middot; <kbd>+</kbd>/<kbd>&minus;</kbd> volume &middot; <kbd>F</kbd> full screen &middot; <kbd>G</kbd> guide</p>
   <p>All programming plays straight from the <a href="https://archive.org" target="_blank" rel="noopener">Internet Archive</a>. Consider <a href="https://archive.org/donate" target="_blank" rel="noopener">donating</a> to keep it there.</p>
 </footer>
 
@@ -433,11 +439,19 @@ function hiss() {
     actx = actx || new AudioContext();
     const len = actx.sampleRate * 0.35, buf = actx.createBuffer(1, len, actx.sampleRate), ch = buf.getChannelData(0);
     for (let k = 0; k < len; k++) ch[k] = (Math.random() * 2 - 1) * (1 - k / len);
-    const src = actx.createBufferSource(), g = actx.createGain(); g.gain.value = 0.08;
+    const src = actx.createBufferSource(), g = actx.createGain(); g.gain.value = 0.08 * vol;
     src.buffer = buf; src.connect(g).connect(actx.destination); src.start();
   } catch {}
 }
 
+let vol = Math.min(1, Math.max(0, parseFloat(localStorage.getItem('re-vol') ?? '0.8') || 0));
+function setVol(v, show) {
+  vol = Math.min(1, Math.max(0, Math.round(v * 100) / 100)); vid.volume = vol;
+  localStorage.setItem('re-vol', vol); $('vol').value = Math.round(vol * 100); $('volN').textContent = Math.round(vol * 100);
+  if (vol > 0 && !sound) { userMuted = false; card.dataset.k = ''; showCard(''); setSound(true); }
+  if (show) { clearTimeout(osdT); osd.textContent = 'VOL ' + '█'.repeat(Math.round(vol * 10)).padEnd(10, '░'); osd.classList.add('on'); osdT = setTimeout(() => osd.classList.remove('on'), 1500); }
+}
+vid.volume = vol; $('vol').value = Math.round(vol * 100); $('volN').textContent = Math.round(vol * 100);
 function setSound(on) {
   sound = on; vid.muted = !on;
   if (on) vid.play().catch(() => {});
@@ -454,6 +468,8 @@ $('bUp').onclick = () => { wake(); tune(cur + 1); };
 $('bDown').onclick = () => { wake(); tune(cur - 1); };
 $('bGuide').onclick = () => $('guide').scrollIntoView({ behavior: still.matches ? 'auto' : 'smooth' });
 $('bSound').onclick = () => { const on = !sound; if (!on) userMuted = true; card.dataset.k = ''; showCard(''); setSound(on); };
+$('vol').addEventListener('input', e => setVol(e.target.value / 100, true));
+$('vol').addEventListener('keydown', e => e.stopPropagation());
 $('fsBtn').onclick = () => { (document.fullscreenElement ? document.exitFullscreen() : screen.requestFullscreen()).catch(() => {}); };
 vid.addEventListener('dblclick', () => $('fsBtn').click());
 
@@ -465,6 +481,8 @@ document.addEventListener('keydown', e => {
   if (k === 'ArrowUp' || k === 'PageUp') { e.preventDefault(); tune(cur + 1); }
   else if (k === 'ArrowDown' || k === 'PageDown') { e.preventDefault(); tune(cur - 1); }
   else if (k === 'f' || k === 'F') $('fsBtn').click();
+  else if (k === '+' || k === '=' || k === 'ArrowRight') { e.preventDefault(); setVol(vol + 0.1, true); }
+  else if (k === '-' || k === '_' || k === 'ArrowLeft') { e.preventDefault(); setVol(vol - 0.1, true); }
   else if (k === 'g' || k === 'G') $('bGuide').click();
   else if (/^[0-9]$/.test(k)) {
     digitBuf += k; osd.textContent = digitBuf + '-'; osd.classList.add('on');

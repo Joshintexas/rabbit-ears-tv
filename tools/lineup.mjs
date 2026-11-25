@@ -83,6 +83,7 @@ const VICE_SQUAD = [
   ['Damaged_Lives', 'Damaged Lives', '1933'],
   ['AssassinOfYouth_423', 'Assassin of Youth', '1937'],
   ['Narcotic1933EXPLOITATION', 'Narcotic', '1933'],
+  ['slave_in_bondage', 'Slaves in Bondage', '1937'],
 ];
 
 const BURLESQUE = [
@@ -239,6 +240,7 @@ const NYLONS = [
   ["ripped-clothing-fight", "Irving Klaw: Pin-Down Fight", "1950s", "Pin Down Fight.mp4"],
   ["bettie-page-assorted-films", "Bettie Page: Teaser Girl 2", "1950s", "Bettie Page Teaser Girl 2.mp4"],
   ["ripped-clothing-fight", "Irving Klaw: Lively Pin-Down Struggle", "1950s", "Lively Pin Down Struggle.mp4"],
+  ["LessonOfTheStrap50sBondage-spankingFetishStagFilm", "Lesson of the Strap", "1950s"],
 ];
 
 // Blonde bombshells, jungle girls and bad girls. Nothing with nudity: this one is on all day.
@@ -291,6 +293,34 @@ const SATURDAY = [
   ['clutchcargocartooonscollection', 'Clutch Cargo: The Missing Mermaid', '1959', 'Clutch Cargo The Missing Mermaid.mp4'],
 ];
 
+// Heroines tied to train tracks and left hanging at the end of every chapter.
+const DAMSELS = [
+  ["SerialchapterPlaystrailers", "Coming Attractions: Serial Trailers", "1930s–40s"],
+  ["BarneyOldfieldsRaceForALife1913_201403", "Barney Oldfield’s Race for a Life", "1913"],
+  ["THEPERILSOFPAULINE1914Ch.1PearlWhite", "The Perils of Pauline, Chapter 1", "1914"],
+  ["THEPERILSOFPAULINE1914Ch.2PearlWhite", "The Perils of Pauline, Chapter 2", "1914"],
+  ["THEPERILSOFPAULINE1914Ch.3PearlWhite", "The Perils of Pauline, Chapter 3", "1914"],
+  ["THEPERILSOFPAULINE1914Ch.4PearlWhite", "The Perils of Pauline, Chapter 4", "1914"],
+  ["hazards_of_helen_wild_engine", "The Hazards of Helen: The Wild Engine", "1915"],
+  ["THEPERILSOFPAULINE1914Ch.5PearlWhite", "The Perils of Pauline, Chapter 5", "1914"],
+  ["THEPERILSOFPAULINE1914Ch.6PearlWhite", "The Perils of Pauline, Chapter 6", "1914"],
+  ["THEPERILSOFPAULINE1914Ch.7PearlWhite", "The Perils of Pauline, Chapter 7", "1914"],
+  ["THEPERILSOFPAULINE1914Ch.8PearlWhite", "The Perils of Pauline, Chapter 8", "1914"],
+  ["THEPERILSOFPAULINE1914Ch.9PearlWhite", "The Perils of Pauline, Chapter 9", "1914"],
+  ["ThePerilsofPauline", "The Perils of Pauline, with Betty Hutton", "1947"],
+];
+
+// Musclemen, Amazon queens and captive women from Italian peplum epics.
+const SWORDS = [
+  ["HerculesUnchained", "Hercules Unchained", "1959"],
+  ["turner_video_393139", "Clip: The Loves of Hercules, with Jayne Mansfield", "1960"],
+  ["Colossus_and_the_Amazon_Queen", "Colossus and the Amazon Queen", "1960"],
+  ["QueenoftheAmazons", "Queen of the Amazons", "1947"],
+  ["cco__HerculesandtheCaptiveWomen", "Hercules and the Captive Women", "1961"],
+  ["TheMightyThorAgainstTheQueenOfTheAmazonsthorAndTheAmazonWomen-", "Thor and the Amazon Women", "1963"],
+  ["Hercules_Against_the_Moon_Men", "Hercules Against the Moon Men", "1964"],
+];
+
 const JUVIE = [
   ['TheViolentYears', 'The Violent Years', '1956'],
   ['0248_Are_You_Popular_E00020_19_00_34_00', 'Are You Popular?', '1947'],
@@ -309,6 +339,7 @@ const JUVIE = [
 
 export const CHANNELS = [
   { num: 8,  slug: 'saturday',    name: 'Saturday Morning', tag: '80s toy & cereal ads, Superman, Clutch Cargo & Space Angel', items: SATURDAY },
+  { num: 11, slug: 'damsels',     name: 'Damsels in Distress', tag: 'Tied to the tracks: Perils of Pauline & silent cliffhangers', items: DAMSELS },
   { num: 13, slug: 'creature',    name: 'Creature Feature', tag: 'Sci-fi & horror B-movies',                    q: 'collection:SciFi_Horror', n: 20, max: 7200 },
   { num: 17, slug: 'juvie',       name: 'Juvie',            tag: 'Girl gangs, hot rods & going steady',         items: JUVIE },
   { num: 21, slug: 'labcoat',     name: 'Lab Coat',         tag: 'Mr. Wizard, Bell Science, NASA & Computer Chronicles', items: LAB_COAT },
@@ -318,6 +349,7 @@ export const CHANNELS = [
   { num: 35, slug: 'primetime',   name: 'Prime Time Trash', tag: 'Sob-story game shows & con-man crime TV',     items: PRIME_TIME_TRASH },
   { num: 38, slug: 'bombshell',   name: 'Bombshell',        tag: 'Marilyn, Jayne, jungle sirens & swamp women', items: BOMBSHELL },
   { num: 45, slug: 'jukebox',     name: 'Jukebox',          tag: 'Soundies, Snader Telescriptions & early jazz shorts', items: JUKEBOX },
+  { num: 51, slug: 'swords',      name: 'Sword & Sandal',   tag: 'Hercules, Amazon queens & captive women',     items: SWORDS },
   { num: 61, slug: 'drivein',    name: 'Drive-In',         tag: 'Monster movies so bad they’re good',          items: DRIVE_IN },
   { num: 63, slug: 'spacebabes',  name: 'Space Babes',      tag: 'Cat-women, cave girls & B-movie bombshells',  items: SPACE_BABES },
   { num: 66, slug: 'vice',        name: 'Vice Squad',       tag: 'Reefer, cocaine & “sex hygiene” scare films', items: VICE_SQUAD },

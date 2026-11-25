@@ -11,6 +11,7 @@ browser works out what's on from the clock.
 | Ch | Name | What's on |
 |---|---|---|
 | 8 | Saturday Morning | 80s toy and cereal ad breaks (He-Man, Transformers, Cabbage Patch), Smokey Bear and Woodsy Owl PSAs, Superman, Clutch Cargo, Space Angel, Casper |
+| 11 | Damsels in Distress | Heroines tied to the tracks: all of The Perils of Pauline (1914), The Hazards of Helen, Barney Oldfield's Race for a Life, serial trailers, Betty Hutton's 1947 Perils of Pauline |
 | 13 | Creature Feature | Sci-fi and horror B-movies |
 | 17 | Juvie | Girl-gang and delinquent movies, 1950s teen guidance films |
 | 21 | Lab Coat | Mr. Wizard, Bell Science, Apollo, Skylab, Voyager and Viking films, The Computer Chronicles |
@@ -20,10 +21,11 @@ browser works out what's on from the clock.
 | 35 | Prime Time Trash | Queen for a Day, Racket Squad, You Bet Your Life |
 | 38 | Bombshell | Marilyn Monroe, Jayne Mansfield, jungle sirens, swamp women and taxi dancers |
 | 45 | Jukebox | 1940s Soundies, Snader Telescriptions, early jazz shorts |
+| 51 | Sword & Sandal | Hercules, Colossus and Thor versus Amazon queens and captive women |
 | 61 | Drive-In | Monster movies so bad they're good, with trailers |
 | 63 | Space Babes | Cat-women, cave girls and B-movie bombshells |
-| 66 | Vice Squad | Reefer, cocaine and "sex hygiene" scare films |
-| 69 | Nylons & Heels | 18+. Bettie Page dances, Irving Klaw fetish and catfight reels, burlesque queens (Blaze Starr, Tempest Storm, Georgia Sothern, Betty Rowland, Dixie Evans), Silk Stocking Parade, hosiery and girdle ads, Lady of Burlesque, Dr. Sex. Age check first |
+| 66 | Vice Squad | Reefer, cocaine, white-slavery and "sex hygiene" scare films |
+| 69 | Nylons & Heels | 18+. Bettie Page dances, Irving Klaw and other 1950s bondage, spanking and catfight reels, burlesque queens (Blaze Starr, Tempest Storm, Georgia Sothern, Betty Rowland, Dixie Evans), Silk Stocking Parade, hosiery and girdle ads, Lady of Burlesque, Dr. Sex. Age check first |
 | 77 | Pre-Code | Racy early-30s Hollywood from before the censors arrived |
 | 88 | Burlesque | Strip-tease revues and cheesecake Soundies |
 | 99 | After Dark | 18+. Early-60s nudie and sexploitation films, Jayne Mansfield's uncut Too Hot to Handle, Ed Wood, shockers. Age check first |

@@ -13,17 +13,20 @@ browser works out what's on from the clock.
 | 3 | Inkwell | Public-domain cartoons |
 | 7 | Classroom | Educational and industrial films |
 | 13 | Creature Feature | Sci-fi and horror B-movies |
+| 17 | Juvie | Girl-gang and delinquent movies, 1950s teen guidance films |
 | 21 | Night Streets | Film noir |
 | 29 | Ad Break | Vintage commercials |
 | 42 | Kodachrome | Strangers' home movies |
 | 55 | Laugh Track | Old comedy shorts and features |
 | 61 | Drive-In | So-bad-they're-good movies, with trailers between features |
 | 64 | Cheap TV | Roller derby, wrestling, cheap space serials, Racket Squad, Groucho |
-| 99 | After Dark | Burlesque reels and 1930s–50s vice films. On air 10 PM–4 AM local time; a test card the rest of the day |
+| 99 | After Dark | 18+. Burlesque, Bettie Page / Irving Klaw fetish reels, vice films and early-60s nudie films. On air 10 PM–4 AM local time; a test card the rest of the day, and an age confirmation before it plays |
 
-Channels 3–55 come from Archive searches. Channels 61–99 are hand-picked lists in
-`tools/build-channels.mjs`. After Dark deliberately leaves out anything with
-nudity: GitHub Pages doesn't allow sexually explicit content.
+Channels 3, 7, 13, 21, 29, 42 and 55 come from Archive searches. Juvie, Drive-In,
+Cheap TV and After Dark are hand-picked lists in `tools/build-channels.mjs`.
+After Dark tops out at R-rated: GitHub Pages allows non-pornographic nudity but
+not pornography, so nothing explicit goes on, and nothing where a performer or
+character could be a minor.
 
 ## Files
 

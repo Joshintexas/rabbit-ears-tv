@@ -36,6 +36,13 @@ a{color:var(--cyan)}
 .screen.tuning .snow{opacity:1}
 .test{position:absolute;inset:0;z-index:1;display:none;align-items:center;justify-content:center;background:linear-gradient(90deg,#fff 0 14.3%,#ffee00 0 28.6%,#00f0ff 0 42.9%,#22ff3a 0 57.1%,#ff2bd6 0 71.4%,#ff2a2a 0 85.7%,#1a2cff 0)}
 .screen.offair .test{display:flex}
+.gate{position:absolute;inset:0;z-index:5;display:none;align-items:center;justify-content:center;background:#000;text-align:center;padding:6%}
+.screen.gated .gate{display:flex}
+.gate b{display:block;font-size:clamp(34px,6vw,64px);line-height:1;color:var(--c,#ff5c8a);font-weight:400}
+.gate p{margin:.6em auto 1em;max-width:30em;font:clamp(14px,1.6vw,17px)/1.45 "IBM Plex Mono",monospace;color:#ddd}
+.gate .btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.gate button{min-height:48px;padding:8px 18px;border:0;font-size:22px;line-height:1;background:var(--c,#ff5c8a);color:#000}
+.gate button+button{background:#222;color:#fff}
 .test div{background:#000;padding:4% 6%;text-align:center;border:4px solid var(--c,#ff5c8a);max-width:80%}
 .test b{display:block;font-size:clamp(30px,6vw,64px);line-height:1;color:var(--c,#ff5c8a);font-weight:400}
 .test span{display:block;margin-top:.4em;font-size:clamp(18px,2.6vw,30px);line-height:1.1;color:#fff}
@@ -114,6 +121,7 @@ a{color:var(--cyan)}
   <div class="screen" id="screen">
     <video id="vid" playsinline preload="auto" muted></video>
     <canvas class="snow" id="snow" width="160" height="120"></canvas>
+    <div class="gate px" id="gate" role="dialog" aria-labelledby="gTitle"><div><b id="gTitle">ADULTS ONLY</b><p id="gText">This channel shows vintage burlesque, fetish reels and exploitation films with nudity. You must be 18 or older to watch.</p><div class="btns"><button id="gYes">I'M 18 OR OLDER</button><button id="gNo">CHANGE CHANNEL</button></div></div></div>
     <div class="test px" id="test" aria-live="polite"><div><b id="tName"></b><span id="tWhen"></span><i id="tIn"></i></div></div>
     <div class="osd px" id="osd"></div>
     <button class="fs" id="fsBtn" aria-label="Full screen"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
@@ -155,7 +163,7 @@ a{color:var(--cyan)}
 <script type="application/json" id="data">__DATA__</script>
 <script>
 {
-const COLORS = {toons:'#ffee00',classroom:'#00f0ff',creature:'#22ff3a',noir:'#ff2bd6',ads:'#ff2a2a',homemovies:'#ffffff',comedy:'#ff9d00',drivein:'#b388ff',cheaptv:'#7fd1ff',afterdark:'#ff5c8a'};
+const COLORS = {toons:'#ffee00',classroom:'#00f0ff',creature:'#22ff3a',noir:'#ff2bd6',ads:'#ff2a2a',homemovies:'#ffffff',comedy:'#ff9d00',drivein:'#b388ff',cheaptv:'#7fd1ff',afterdark:'#ff5c8a',juvie:'#c6ff00'};
 const EPOCH = Date.UTC(2025, 0, 1) / 1000;          // every viewer counts from the same moment
 const CH = JSON.parse(document.getElementById('data').textContent);
 for (const ch of CH) {
@@ -168,6 +176,8 @@ const now = () => Date.now() / 1000;
 const bad = new Set();
 let cur = 0, sound = false, userMuted = false, playing = null, tok = 0, osdT, digitBuf = '', digitT, watchdog, standbyT;
 
+let adultOK = false;
+try { adultOK = localStorage.getItem('re-18') === '1'; } catch {}
 try { const s = parseInt(localStorage.getItem('re-ch')); if (s >= 0 && s < CH.length) cur = s; } catch {}
 // Tapes that failed in the last 12 hours are skipped straight away.
 try { const m = JSON.parse(localStorage.getItem('re-bad') || '{}'); for (const id in m) if (Date.now() - m[id] < 12 * 3600e3) bad.add(id); } catch {}
@@ -226,6 +236,8 @@ function play() {
   const ch = CH[cur];
   if (!onAir(ch, now())) { offAir(); return; }
   screen.classList.remove('offair');
+  if (ch.adult && !adultOK) { gate(); return; }
+  screen.classList.remove('gated');
   const my = ++tok, r = resolve(ch, now()), it = ch.items[r.i];
   clearTimeout(watchdog); clearTimeout(standbyT);
   playing = { ch: cur, i: r.i, it, start: r.start };
@@ -249,8 +261,21 @@ function play() {
   renderInfo();
 }
 // Test card while a part-time channel is off the air.
+// Age confirmation before an adults-only channel loads anything.
+function gate() {
+  ++tok; clearTimeout(watchdog); clearTimeout(standbyT);
+  playing = { ch: cur, gate: true };
+  vid.pause(); vid.removeAttribute('src'); vid.load();
+  snow(false); showCard('');
+  screen.classList.add('gated');
+  screen.style.setProperty('--c', CH[cur].color);
+  renderInfo();
+}
+$('gYes').onclick = () => { adultOK = true; try { localStorage.setItem('re-18', '1'); } catch {} wake(); play(); };
+$('gNo').onclick = () => { wake(); tune(cur - 1); };
 function offAir() {
   ++tok; clearTimeout(watchdog); clearTimeout(standbyT);
+  screen.classList.remove('gated');
   const ch = CH[cur], on = nextSignOn(ch, now());
   playing = { ch: cur, off: true, on };
   vid.pause(); vid.removeAttribute('src'); vid.load();
@@ -285,6 +310,12 @@ function renderInfo() {
   $('iNum').textContent = String(ch.num).padStart(2, '0');
   $('iName').textContent = ch.name.toUpperCase();
   $('iTag').textContent = ch.tag;
+  if (playing.gate) {
+    $('iTitle').textContent = 'Adults only. Confirm your age to watch.';
+    $('iLink').href = 'https://archive.org'; $('iNext').innerHTML = '';
+    tickInfo();
+    return;
+  }
   if (playing.off) {
     $('iTitle').textContent = 'Off the air';
     $('iLink').href = 'https://archive.org';
@@ -313,6 +344,7 @@ function renderInfo() {
 }
 function tickInfo() {
   if (!playing) return;
+  if (playing.gate) { $('iBar').style.width = '0%'; $('iPos').textContent = ''; $('iDur').textContent = ''; return; }
   if (playing.off) {
     const left = playing.on - now();
     $('iBar').style.width = '0%'; $('iPos').textContent = 'Signs on in'; $('iDur').textContent = hms(left);
@@ -449,7 +481,8 @@ setInterval(() => {
   const t = now();
   $('clk').textContent = new Date().toLocaleString([], { weekday: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit' });
   tickInfo(); placeNowLine();
-  if (playing && playing.off) { if (onAir(CH[cur], t)) play(); }
+  if (playing && playing.gate) { if (!onAir(CH[cur], t)) offAir(); }
+  else if (playing && playing.off) { if (onAir(CH[cur], t)) play(); }
   else if (playing && !onAir(CH[cur], t)) offAir();
   else if (playing) {
     const r = resolve(CH[cur], t);

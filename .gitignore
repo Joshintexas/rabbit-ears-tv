@@ -1,2 +1,4 @@
 .claude/
 node_modules/
+private/
+tools/lineup-private.mjs

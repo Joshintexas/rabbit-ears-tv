@@ -67,6 +67,10 @@ Then open http://localhost:8765.
    adult and still-copyrighted uploads. Add any rejects to `DROP` and rerun.
 4. `node tools/assemble.mjs`
 
+A local-only copy can have its own line-up: put it in `tools/lineup-private.mjs`, then run
+both commands with `--private` and open http://localhost:8765/private/. That file and the
+`private/` folder are git-ignored, so they never get pushed.
+
 ## Put it online
 
 `index.html` is a static file, so any static host works: GitHub Pages, Netlify,

@@ -6,12 +6,14 @@
 //   node tools/build-channels.mjs drivein vice rebuild only these channels, keep the rest as they are
 //   node tools/build-channels.mjs --refresh    look every video up again instead of reusing earlier lookups
 //   node tools/assemble.mjs                    then bake the data into index.html
+//   add --private to either one to use tools/lineup-private.mjs and the private/ folder
+//   (both are git-ignored: that copy is for running on your own computer only)
 //
 // Searched channels pull in junk, so always read the titles after a rebuild and add rejects to DROP.
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
-import { CHANNELS } from './lineup.mjs';
-
-const DEST = 'data/channels.json';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
+const PRIVATE = process.argv.includes('--private');
+const { CHANNELS } = await import(PRIVATE ? './lineup-private.mjs' : './lineup.mjs');
+const DEST = PRIVATE ? 'private/channels.json' : 'data/channels.json';
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 async function getJSON(url, tries = 3) {
@@ -67,6 +69,23 @@ async function resolveItem(id, title, year, max = 4 * 3600, want) {
   return { id, file: f.name, dur: f.len, title, year };
 }
 
+// An item holding a whole season: one playlist entry per playable video, in name order.
+async function expandItem(id, title, year, limit = 999) {
+  const md = await getJSON(`https://archive.org/metadata/${encodeURIComponent(id)}`);
+  if (!md?.files) { console.error(`  missing: ${id}`); return []; }
+  const best = new Map();
+  for (const f of md.files) {
+    if (!f.name?.toLowerCase().endsWith('.mp4')) continue;
+    const r = RANK[(f.format || '').toLowerCase()], len = parseLen(f.length);
+    if (!r || len < 60 || len > 4 * 3600) continue;
+    const k = f.name.replace(/(\.ia)?\.mp4$/i, '').replace(/_512kb$/i, '');
+    if (!best.has(k) || r > best.get(k).r) best.set(k, { r, name: f.name, len });
+  }
+  const files = [...best.values()].sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true })).slice(0, limit);
+  if (!files.length || !(await reachable(id, files[0].name))) { console.error(`  offline or empty: ${id}`); return []; }
+  return files.map((f) => ({ id, file: f.name, dur: f.len, title: `${title}: ${f.name.split('/').pop().replace(/(\.ia)?\.mp4$/i, '').replace(/[_]+/g, ' ')}`, year }));
+}
+
 // Searched channels only. Hand-reviewed rejects: adult, graphic, still under copyright, mislabeled, or off-theme.
 const EXCLUDE = /sex|molester|naked|nude|kirby|hogan|doblaje|espa[nñ]ol|full ?movie|trailer|teaserama|burlesque|strip/i;
 const DROP = new Set([
@@ -87,11 +106,16 @@ const norm = (t) => t.toLowerCase().replace(/\(.*?\)/g, '').replace(/\bthe\b/g, 
 async function buildChannel(ch) {
   const items = [];
   if (ch.items) {
-    for (const [id, title, year, want] of ch.items) {
+    const groups = [];
+    for (const [id, title, year, want, limit] of ch.items) {
+      if (want === '*') { groups.push(await expandItem(id, title, year, limit)); continue; }
       const known = !REFRESH && CACHE.get(want ? `${id}/${want}` : id);
       const it = known ? { ...known, title, year } : await resolveItem(id, title, year, undefined, want);
-      if (it) items.push(it);
+      if (it) groups.push([it]);
     }
+    // mix: deal shows out in turn (one episode of each) instead of a whole season in a row
+    if (ch.mix) { for (let i = 0; groups.some((g) => g.length > i); i++) for (const g of groups) if (g[i]) items.push(g[i]); }
+    else items.push(...groups.flat());
   } else {
     const seen = new Set();
     const url = `https://archive.org/advancedsearch.php?q=${encodeURIComponent(ch.q)}&fl[]=identifier&fl[]=title&fl[]=year&fl[]=date&sort[]=downloads+desc&rows=${ch.n * 3}&output=json`;
@@ -109,7 +133,7 @@ async function buildChannel(ch) {
   }
   const total = items.reduce((a, b) => a + b.dur, 0);
   console.error(`${ch.name}: ${items.length} items, ${(total / 3600).toFixed(1)} h`);
-  const { q, n, max, items: _, ...meta } = ch;
+  const { q, n, max, mix, items: _, ...meta } = ch;
   return { ...meta, items };
 }
 
@@ -117,16 +141,18 @@ const REFRESH = process.argv.includes('--refresh');
 const only = process.argv.slice(2).filter((a) => !a.startsWith('--'));
 const old = existsSync(DEST) ? JSON.parse(readFileSync(DEST, 'utf8')) : [];
 // Earlier lookups, by item id and by id/file (for items that hold several videos).
-const CACHE = new Map(old.flatMap((c) => c.items.flatMap((i) => [[i.id, i], [`${i.id}/${i.file}`, i]])));
+const seen = [...old, ...(PRIVATE && existsSync('data/channels.json') ? JSON.parse(readFileSync('data/channels.json', 'utf8')) : [])];
+const CACHE = new Map(seen.flatMap((c) => c.items.flatMap((i) => [[i.id, i], [`${i.id}/${i.file}`, i]])));
 const out = [];
 for (const ch of CHANNELS) {
   const prev = old.find((c) => c.slug === ch.slug);
   if (only.length && !only.includes(ch.slug) && prev) {
-    const { q, n, max, items: _, ...meta } = ch;
+    const { q, n, max, mix, items: _, ...meta } = ch;
     out.push({ ...meta, items: prev.items });   // keep the existing line-up, refresh name/tag/hours
   } else {
     out.push(await buildChannel(ch));
   }
 }
+mkdirSync(DEST.split('/')[0], { recursive: true });
 writeFileSync(DEST, JSON.stringify(out));
 console.error('wrote', DEST);

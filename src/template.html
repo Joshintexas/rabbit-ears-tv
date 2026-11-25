@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rabbit Ears TV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jersey+10&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* VOICE: deadpan late-night broadcaster, a little dry.
+   IDEA: a teletext service page (P100) wrapped around a live TV feed.
+   PICTURE: the screen itself, with snow between channels.
+   COLOUR and TYPE: black ground, the seven teletext colours; Jersey 10 pixel display + IBM Plex Mono.
+   LAYOUT: header bar, screen + now-playing panel, fastext keys, full-width guide grid. */
+:root{color-scheme:dark;--bg:#000;--ink:#fff;--dim:#9a9a9a;--blue:#1a2cff;--red:#ff2a2a;--green:#22ff3a;--yellow:#ffee00;--cyan:#00f0ff;--magenta:#ff2bd6;--line:#222}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font:15px/1.5 "IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;overflow-x:clip}
+.px{font-family:"Jersey 10","IBM Plex Mono",monospace;font-weight:400;letter-spacing:.02em}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,.row:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+a{color:var(--cyan)}
+
+.tt{display:flex;align-items:center;gap:14px;padding:8px max(3vw,14px);background:var(--blue);font-size:20px}
+.tt .pg{color:var(--yellow)}
+.tt h1{margin:0;font-size:38px;line-height:1;color:var(--yellow);flex:1}
+.tt h1 span{color:#fff}
+.tt .clk{font-variant-numeric:tabular-nums;white-space:nowrap}
+
+.deck{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:clamp(14px,2vw,28px);padding:clamp(14px,2.4vw,32px) max(3vw,14px) 10px;max-width:1500px;margin:0 auto}
+.screen{position:relative;aspect-ratio:4/3;background:#050505;border-radius:22px/18px;overflow:hidden;box-shadow:0 0 0 10px #161616,0 0 0 12px #2a2a2a,0 24px 60px rgba(0,0,0,.8)}
+.screen video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000}
+.screen::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 1px,transparent 1px 3px),radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.55));z-index:3}
+.snow{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;opacity:0;transition:opacity .15s;z-index:2}
+.screen.tuning .snow{opacity:1}
+.osd{position:absolute;top:5%;right:6%;z-index:4;font-size:clamp(34px,6vw,64px);color:var(--green);text-shadow:3px 3px 0 #000;opacity:0;transition:opacity .3s}
+.osd.on{opacity:1}
+.card{position:absolute;inset:auto 6% 7% 6%;z-index:4;padding:10px 14px;background:rgba(0,0,0,.82);border:2px solid var(--yellow);color:var(--yellow);font-size:clamp(20px,2.6vw,30px);line-height:1.1;text-align:center}
+.card[hidden]{display:none}
+.fs{position:absolute;left:4%;top:4%;z-index:4;width:44px;height:44px;border:0;background:rgba(0,0,0,.5);border-radius:6px;opacity:0;transition:opacity .2s}
+.screen:hover .fs,.fs:focus-visible{opacity:1}
+.fs svg{width:22px;height:22px;display:block;margin:auto}
+
+.info{display:flex;flex-direction:column;gap:14px}
+.chan{display:flex;align-items:center;gap:14px}
+.num{font-size:clamp(56px,7vw,96px);line-height:.8;color:#000;padding:8px 12px 4px;background:var(--c,var(--yellow))}
+.chan h2{margin:0;font-size:clamp(32px,3.4vw,46px);line-height:1;color:var(--c,var(--yellow))}
+.chan p{margin:2px 0 0;color:var(--dim)}
+.label{color:var(--cyan);font-size:22px;line-height:1;margin:0 0 4px}
+.now h3{margin:0;font-size:clamp(20px,1.8vw,24px);line-height:1.2;font-weight:600;text-wrap:balance}
+.now .yr{color:var(--dim);font-weight:400}
+.bar{height:12px;background:#1d1d1d;margin:10px 0 4px}
+.bar i{display:block;height:100%;width:0;background:var(--c,var(--yellow))}
+.times{display:flex;justify-content:space-between;color:var(--dim);font-variant-numeric:tabular-nums}
+.next{list-style:none;margin:0;padding:0}
+.next li{display:grid;grid-template-columns:6.2em minmax(0,1fr);gap:8px;padding:5px 0;border-top:1px dashed var(--line)}
+.next b{color:var(--yellow);font-weight:400;white-space:nowrap;font-variant-numeric:tabular-nums}
+.next span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.src{margin-top:auto;color:var(--dim);font-size:13px}
+
+.fast{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:6px max(3vw,14px) 18px;max-width:1500px;margin:0 auto}
+.fast button{min-height:48px;border:0;color:#000;font-size:24px;line-height:1;padding:6px}
+.fast .r{background:var(--red)}.fast .g{background:var(--green)}.fast .y{background:var(--yellow)}.fast .c{background:var(--cyan)}
+.fast small{display:block;font:12px "IBM Plex Mono",monospace;opacity:.7}
+
+.guide{border-top:6px solid var(--blue);padding:0 0 24px}
+.ghead{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:16px max(3vw,14px) 10px;flex-wrap:wrap}
+.ghead h2{margin:0;font-size:40px;line-height:1;color:var(--yellow)}
+.ghead p{margin:0;color:var(--dim)}
+.grid{--lw:210px;position:relative;margin:0 max(3vw,14px)}
+.hours,.row{display:grid;grid-template-columns:var(--lw) minmax(0,1fr)}
+.hours .tk{position:relative;height:26px;color:var(--cyan)}
+.hours .tk span{position:absolute;transform:translateX(-50%);white-space:nowrap;font-variant-numeric:tabular-nums}
+.hours .tk span:first-child{transform:none}
+.row{min-height:52px;border-top:2px solid #000;background:#0b0b0b;cursor:pointer}
+.row:hover .lab{background:#1b1b1b}
+.row.cur{background:#141414}.row.cur .lab{box-shadow:inset 6px 0 0 var(--c)}
+.lab{display:flex;align-items:center;gap:10px;padding:6px 10px;background:#101010}
+.lab .n{font-size:28px;line-height:1;color:#000;background:var(--c);padding:3px 6px 0;min-width:2.1em;text-align:center}
+.lab .nm{font-size:24px;line-height:1;color:var(--c);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.track{position:relative;overflow:hidden}
+.cell{position:absolute;top:4px;bottom:4px;padding:4px 8px;background:#1c1c1c;border-left:3px solid var(--c);overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:13px;line-height:1.3}
+.cell.live{background:#2a2a2a}
+.cell em{display:block;font-style:normal;color:var(--dim);font-size:12px}
+.nowline{position:absolute;top:26px;bottom:0;width:2px;background:var(--red);z-index:2;pointer-events:none}
+.foot{padding:18px max(3vw,14px) 30px;color:var(--dim);font-size:13px;border-top:1px solid var(--line)}
+.keys kbd{border:1px solid #444;padding:0 5px;color:#ddd;font:inherit}
+
+@media (max-width:860px){.deck{grid-template-columns:minmax(0,1fr)}.screen{border-radius:14px}}
+@media (max-width:600px){
+  .tt h1{font-size:30px}.tt .pg{display:none}
+  .grid{--lw:76px}.lab .nm{display:none}
+  .fast button{font-size:20px}.fast small{display:none}
+}
+@media (prefers-reduced-motion:reduce){.snow{transition:none}}
+</style>
+</head>
+<body>
+<header class="tt px">
+  <span class="pg">P100</span>
+  <h1>RABBIT <span>EARS</span></h1>
+  <span class="clk" id="clk">--:--:--</span>
+</header>
+
+<main class="deck">
+  <div class="screen" id="screen">
+    <video id="vid" playsinline preload="auto" muted></video>
+    <canvas class="snow" id="snow" width="160" height="120"></canvas>
+    <div class="osd px" id="osd"></div>
+    <button class="fs" id="fsBtn" aria-label="Full screen"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+    <div class="card px" id="card">CLICK ANYWHERE OR PRESS A KEY FOR SOUND</div>
+  </div>
+  <aside class="info" id="info">
+    <div class="chan"><div class="num px" id="iNum">--</div><div><h2 class="px" id="iName">Warming up</h2><p id="iTag"></p></div></div>
+    <div class="now">
+      <p class="label px">NOW PLAYING</p>
+      <h3 id="iTitle">&nbsp;</h3>
+      <div class="bar"><i id="iBar"></i></div>
+      <div class="times"><span id="iPos">0:00</span><span id="iDur">0:00</span></div>
+    </div>
+    <div>
+      <p class="label px">COMING UP</p>
+      <ul class="next" id="iNext"></ul>
+    </div>
+    <p class="src">Streaming from the Internet Archive: <a id="iLink" href="https://archive.org" target="_blank" rel="noopener">view this tape</a></p>
+  </aside>
+</main>
+
+<nav class="fast px" aria-label="Remote">
+  <button class="r" id="bDown">CH &#9660;<small>arrow down</small></button>
+  <button class="g" id="bUp">CH &#9650;<small>arrow up</small></button>
+  <button class="y" id="bGuide">GUIDE<small>G</small></button>
+  <button class="c" id="bSound">SOUND ON<small>M</small></button>
+</nav>
+
+<section class="guide" id="guide">
+  <div class="ghead"><h2 class="px">TONIGHT ON RABBIT EARS</h2><p>Everyone sees the same thing at the same time. Pick a row to tune in.</p></div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<footer class="foot">
+  <p class="keys">Remote: <kbd>&uarr;</kbd>/<kbd>&darr;</kbd> change channel &middot; type a channel number &middot; <kbd>M</kbd> sound &middot; <kbd>F</kbd> full screen &middot; <kbd>G</kbd> guide</p>
+  <p>All programming plays straight from the <a href="https://archive.org" target="_blank" rel="noopener">Internet Archive</a>. Consider <a href="https://archive.org/donate" target="_blank" rel="noopener">donating</a> to keep it there.</p>
+</footer>
+
+<script type="application/json" id="data">__DATA__</script>
+<script>
+{
+const COLORS = {toons:'#ffee00',classroom:'#00f0ff',creature:'#22ff3a',noir:'#ff2bd6',ads:'#ff2a2a',homemovies:'#ffffff',comedy:'#ff9d00'};
+const EPOCH = Date.UTC(2025, 0, 1) / 1000;          // every viewer counts from the same moment
+const CH = JSON.parse(document.getElementById('data').textContent);
+for (const ch of CH) {
+  ch.color = COLORS[ch.slug] || '#ffee00';
+  let s = 0; ch.starts = ch.items.map(it => { const v = s; s += it.dur; return v; }); ch.total = s;
+}
+const $ = id => document.getElementById(id);
+const vid = $('vid'), screen = $('screen'), card = $('card'), osd = $('osd');
+const now = () => Date.now() / 1000;
+const bad = new Set();
+let cur = 0, sound = false, userMuted = false, playing = null, tok = 0, osdT, digitBuf = '', digitT, watchdog, standbyT;
+
+try { const s = parseInt(localStorage.getItem('re-ch')); if (s >= 0 && s < CH.length) cur = s; } catch {}
+// Tapes that failed in the last 12 hours are skipped straight away.
+try { const m = JSON.parse(localStorage.getItem('re-bad') || '{}'); for (const id in m) if (Date.now() - m[id] < 12 * 3600e3) bad.add(id); } catch {}
+
+// Where is channel `ch` at wall-clock time t? Pure arithmetic, no server.
+function at(ch, t) {
+  const p = (((t - EPOCH) % ch.total) + ch.total) % ch.total;
+  let lo = 0, hi = ch.items.length - 1;
+  while (lo < hi) { const m = (lo + hi + 1) >> 1; if (ch.starts[m] <= p) lo = m; else hi = m - 1; }
+  const off = p - ch.starts[lo];
+  return { i: lo, off, start: t - off };
+}
+// Same, but skip tapes that failed to load for this viewer.
+function resolve(ch, t) {
+  let { i, off } = at(ch, t), n = 0;
+  while (bad.has(ch.items[i].id) && n++ < ch.items.length) { i = (i + 1) % ch.items.length; off = off % ch.items[i].dur; }
+  return { i, start: t - off };
+}
+const url = it => `https://archive.org/download/${encodeURIComponent(it.id)}/${it.file.split('/').map(encodeURIComponent).join('/')}`;
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const hms = s => { s = Math.max(0, Math.floor(s)); const h = Math.floor(s / 3600), m = Math.floor(s / 60) % 60, x = String(s % 60).padStart(2, '0'); return h ? `${h}:${String(m).padStart(2, '0')}:${x}` : `${m}:${x}`; };
+const clock = t => new Date(t * 1000).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+
+const INTRO = 'CLICK ANYWHERE OR PRESS A KEY FOR SOUND';
+// An empty message falls back to the sound prompt until the viewer has interacted.
+function showCard(msg) { if (!msg && card.dataset.k === 'intro') msg = INTRO; card.textContent = msg; card.hidden = !msg; }
+function snow(on) { screen.classList.toggle('tuning', on); }
+
+function tune(k) {
+  cur = ((k % CH.length) + CH.length) % CH.length;
+  try { localStorage.setItem('re-ch', cur); } catch {}
+  const ch = CH[cur];
+  osd.textContent = String(ch.num).padStart(2, '0') + ' ' + ch.name.toUpperCase();
+  osd.classList.add('on'); clearTimeout(osdT); osdT = setTimeout(() => osd.classList.remove('on'), 2600);
+  hiss();
+  play();
+  renderGuide();
+}
+
+function play() {
+  const my = ++tok, ch = CH[cur], r = resolve(ch, now()), it = ch.items[r.i];
+  clearTimeout(watchdog); clearTimeout(standbyT);
+  playing = { ch: cur, i: r.i, it, start: r.start };
+  snow(true);
+  showCard('');
+  vid.src = url(it);
+  // A dead Archive node can take ~20s to error out, so give up on our own after 10s without metadata.
+  const hint = setTimeout(() => { if (my === tok && vid.readyState < 1) showCard('SEARCHING FOR SIGNAL...'); }, 4000);
+  watchdog = setTimeout(() => { if (my === tok && vid.readyState < 1) fail(my); }, 10000);
+  vid.onloadedmetadata = () => {
+    if (my !== tok) return;
+    clearTimeout(hint); clearTimeout(watchdog);
+    showCard('');
+    watchdog = setTimeout(() => { if (my === tok && vid.readyState < 3) fail(my); }, 25000);
+    const target = now() - playing.start;
+    if (target >= vid.duration - 2) { standby(my); return; }   // tape shorter than listed: wait for next slot
+    vid.currentTime = target;
+    vid.muted = !sound;
+    vid.play().catch(() => { vid.muted = true; vid.play().catch(() => {}); });
+  };
+  renderInfo();
+}
+function standby(my) {
+  snow(true); showCard('PLEASE STAND BY');
+  standbyT = setTimeout(() => { if (my === tok) play(); }, 3000);
+}
+function fail(my) {
+  if (my !== tok) return;
+  clearTimeout(watchdog);
+  bad.add(playing.it.id);
+  try { const m = JSON.parse(localStorage.getItem('re-bad') || '{}'); m[playing.it.id] = Date.now(); localStorage.setItem('re-bad', JSON.stringify(m)); } catch {}
+  showCard('BAD TAPE. SKIPPING AHEAD...');
+  setTimeout(() => { if (my === tok) play(); }, 1200);
+}
+vid.addEventListener('playing', () => { snow(false); showCard(''); });
+vid.addEventListener('waiting', () => snow(true));
+vid.addEventListener('ended', () => play());
+vid.addEventListener('error', () => { if (vid.src) fail(tok); });
+
+function renderInfo() {
+  if (!playing) return;
+  const ch = CH[playing.ch], it = playing.it;
+  $('info').style.setProperty('--c', ch.color);
+  $('iNum').textContent = String(ch.num).padStart(2, '0');
+  $('iName').textContent = ch.name.toUpperCase();
+  $('iTag').textContent = ch.tag;
+  $('iTitle').innerHTML = esc(it.title) + (it.year ? ` <span class="yr">(${esc(it.year)})</span>` : '');
+  $('iLink').href = `https://archive.org/details/${encodeURIComponent(it.id)}`;
+  let t = playing.start + it.dur, html = '';
+  for (let k = 1, j = playing.i; k <= 3; k++) {
+    j = (j + 1) % ch.items.length;
+    html += `<li><b>${clock(t)}</b><span>${esc(ch.items[j].title)}</span></li>`;
+    t += ch.items[j].dur;
+  }
+  $('iNext').innerHTML = html;
+  tickInfo();
+}
+function tickInfo() {
+  if (!playing) return;
+  const el = now() - playing.start, d = playing.it.dur;
+  $('iBar').style.width = Math.min(100, el / d * 100) + '%';
+  $('iPos').textContent = hms(el); $('iDur').textContent = hms(d);
+}
+
+// Guide grid: channels x time, short items merged so 30-second ads don't become slivers.
+function renderGuide() {
+  const narrow = innerWidth < 600, span = (narrow ? 1.5 : 2.5) * 3600;
+  const w0 = Math.floor(now() / 1800) * 1800, w1 = w0 + span, pct = t => ((t - w0) / span * 100).toFixed(3) + '%';
+  let ticks = '';
+  for (let t = w0; t < w1; t += 1800) if (!narrow || t % 3600 === 0) ticks += `<span style="left:${pct(t)}">${clock(t)}</span>`;
+  let rows = '';
+  CH.forEach((ch, idx) => {
+    let { i, start } = at(ch, w0), cells = '', pend = null;
+    const MIN = narrow ? 0.2 : 0.12;   // anything narrower than 12% of the grid gets bundled with its neighbours
+    const flush = () => {
+      if (!pend) return;
+      const t = pend.n > 1 ? `${pend.first} + ${pend.n - 1} more` : pend.first;
+      cells += cell(ch, pend.a, pend.b, t, pend.n > 1 ? '' : pend.year, pend.a <= now() && now() < pend.b);
+      pend = null;
+    };
+    for (let g = 0; start < w1 && g < 2000; g++) {
+      const it = ch.items[i], end = start + it.dur, a = Math.max(start, w0), b = Math.min(end, w1);
+      if ((b - a) / span < MIN) {
+        if (pend) { pend.b = b; pend.n++; } else pend = { a, b, n: 1, first: it.title, year: it.year };
+        if ((pend.b - pend.a) / span >= MIN) flush();
+      }
+      else { flush(); cells += cell(ch, a, b, it.title, it.year, start <= now() && now() < end); }
+      start = end; i = (i + 1) % ch.items.length;
+    }
+    flush();
+    rows += `<div class="row${idx === cur ? ' cur' : ''}" style="--c:${ch.color}" data-i="${idx}" tabindex="0" role="button" aria-label="Tune to ${esc(ch.name)}">
+      <div class="lab"><span class="n px">${ch.num}</span><span class="nm px">${esc(ch.name.toUpperCase())}</span></div>
+      <div class="track">${cells}</div></div>`;
+  });
+  function cell(ch, a, b, title, year, live) {
+    return `<div class="cell${live ? ' live' : ''}" style="left:${pct(a)};width:calc(${((b - a) / span * 100).toFixed(3)}% - 3px)" title="${esc(title)}">${esc(title)}<em>${clock(a)}${year ? ' &middot; ' + esc(year) : ''}</em></div>`;
+  }
+  $('grid').innerHTML = `<div class="hours"><div></div><div class="tk">${ticks}</div></div>${rows}<div class="nowline" id="nowline"></div>`;
+  placeNowLine(w0, span);
+}
+let gw0 = 0, gspan = 1;
+function placeNowLine(w0, span) {
+  if (w0) { gw0 = w0; gspan = span; }
+  const g = $('grid'), lab = parseFloat(getComputedStyle(g).getPropertyValue('--lw')), line = $('nowline');
+  if (!line) return;
+  const track = g.clientWidth - lab;
+  line.style.left = (lab + (now() - gw0) / gspan * track) + 'px';
+}
+$('grid').addEventListener('click', e => { const r = e.target.closest('.row'); if (r) { wake(); tune(+r.dataset.i); } });
+$('grid').addEventListener('keydown', e => { const r = e.target.closest('.row'); if (r && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); wake(); tune(+r.dataset.i); } });
+
+// Snow: random grey pixels on a tiny canvas, scaled up.
+const sc = $('snow').getContext('2d'), img = sc.createImageData(160, 120);
+const still = matchMedia('(prefers-reduced-motion: reduce)');
+function drawSnow() {
+  if (screen.classList.contains('tuning')) {
+    const d = img.data;
+    for (let p = 0; p < d.length; p += 4) { const v = Math.random() * 255 | 0; d[p] = d[p + 1] = d[p + 2] = v; d[p + 3] = 255; }
+    sc.putImageData(img, 0, 0);
+  }
+  if (!still.matches) requestAnimationFrame(drawSnow); else setTimeout(drawSnow, 1000);
+}
+drawSnow();
+
+// A short burst of white noise between channels, only once sound is on.
+let actx;
+function hiss() {
+  if (!sound) return;
+  try {
+    actx = actx || new AudioContext();
+    const len = actx.sampleRate * 0.35, buf = actx.createBuffer(1, len, actx.sampleRate), ch = buf.getChannelData(0);
+    for (let k = 0; k < len; k++) ch[k] = (Math.random() * 2 - 1) * (1 - k / len);
+    const src = actx.createBufferSource(), g = actx.createGain(); g.gain.value = 0.08;
+    src.buffer = buf; src.connect(g).connect(actx.destination); src.start();
+  } catch {}
+}
+
+function setSound(on) {
+  sound = on; vid.muted = !on;
+  if (on) vid.play().catch(() => {});
+  $('bSound').firstChild.textContent = on ? 'SOUND OFF' : 'SOUND ON';
+}
+// First interaction turns sound on (browsers block audio until then).
+function wake() {
+  if (card.dataset.k === 'intro') { card.dataset.k = ''; showCard(''); if (!userMuted) setSound(true); }
+}
+card.dataset.k = 'intro';
+document.addEventListener('pointerdown', e => { if (!e.target.closest('#bSound')) wake(); }, { capture: true });
+
+$('bUp').onclick = () => { wake(); tune(cur + 1); };
+$('bDown').onclick = () => { wake(); tune(cur - 1); };
+$('bGuide').onclick = () => $('guide').scrollIntoView({ behavior: still.matches ? 'auto' : 'smooth' });
+$('bSound').onclick = () => { const on = !sound; if (!on) userMuted = true; card.dataset.k = ''; showCard(''); setSound(on); };
+$('fsBtn').onclick = () => { (document.fullscreenElement ? document.exitFullscreen() : screen.requestFullscreen()).catch(() => {}); };
+vid.addEventListener('dblclick', () => $('fsBtn').click());
+
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey || e.metaKey || e.altKey || e.target.closest?.('.row')) return;
+  const k = e.key;
+  if (k === 'm' || k === 'M') { userMuted = sound; card.dataset.k = ''; showCard(''); setSound(!sound); return; }
+  wake();
+  if (k === 'ArrowUp' || k === 'PageUp') { e.preventDefault(); tune(cur + 1); }
+  else if (k === 'ArrowDown' || k === 'PageDown') { e.preventDefault(); tune(cur - 1); }
+  else if (k === 'f' || k === 'F') $('fsBtn').click();
+  else if (k === 'g' || k === 'G') $('bGuide').click();
+  else if (/^[0-9]$/.test(k)) {
+    digitBuf += k; osd.textContent = digitBuf + '-'; osd.classList.add('on');
+    clearTimeout(digitT);
+    digitT = setTimeout(() => {
+      const idx = CH.findIndex(c => c.num === +digitBuf); digitBuf = '';
+      if (idx >= 0) tune(idx); else { osd.textContent = 'NO SIGNAL'; osdT = setTimeout(() => osd.classList.remove('on'), 1500); }
+    }, 1100);
+  }
+});
+
+// Heartbeat: clock, progress, drift correction, schedule rollover.
+let lastGuide = 0;
+setInterval(() => {
+  const t = now();
+  $('clk').textContent = new Date().toLocaleString([], { weekday: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  tickInfo(); placeNowLine();
+  if (playing) {
+    const r = resolve(CH[cur], t);
+    if (r.i !== playing.i && vid.readyState >= 1) play();
+    else if (!vid.paused && Math.abs(vid.currentTime - (t - playing.start)) > 8) vid.currentTime = t - playing.start;
+  }
+  if (t - lastGuide > 60) { lastGuide = t; renderGuide(); }
+}, 1000);
+addEventListener('resize', () => renderGuide());
+
+tune(cur);
+}
+</script>
+</body>
+</html>

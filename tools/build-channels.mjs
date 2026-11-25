@@ -70,14 +70,14 @@ async function resolveItem(id, title, year, max = 4 * 3600, want) {
 }
 
 // An item holding a whole season: one playlist entry per playable video, in name order.
-async function expandItem(id, title, year, limit = 999) {
+async function expandItem(id, title, year, limit = 999, max = 4 * 3600) {
   const md = await getJSON(`https://archive.org/metadata/${encodeURIComponent(id)}`);
   if (!md?.files) { console.error(`  missing: ${id}`); return []; }
   const best = new Map();
   for (const f of md.files) {
     if (!f.name?.toLowerCase().endsWith('.mp4')) continue;
     const r = RANK[(f.format || '').toLowerCase()], len = parseLen(f.length);
-    if (!r || len < 60 || len > 4 * 3600) continue;
+    if (!r || len < 60 || len > max) continue;
     const k = f.name.replace(/(\.ia)?\.mp4$/i, '').replace(/_512kb$/i, '');
     if (!best.has(k) || r > best.get(k).r) best.set(k, { r, name: f.name, len });
   }
@@ -108,9 +108,9 @@ async function buildChannel(ch) {
   if (ch.items) {
     const groups = [];
     for (const [id, title, year, want, limit] of ch.items) {
-      if (want === '*') { groups.push(await expandItem(id, title, year, limit)); continue; }
+      if (want === '*') { groups.push(await expandItem(id, title, year, limit, ch.max)); continue; }
       const known = !REFRESH && CACHE.get(want ? `${id}/${want}` : id);
-      const it = known ? { ...known, title, year } : await resolveItem(id, title, year, undefined, want);
+      const it = known ? { ...known, title, year } : await resolveItem(id, title, year, ch.max, want);
       if (it) groups.push([it]);
     }
     // mix: deal shows out in turn (one episode of each) instead of a whole season in a row

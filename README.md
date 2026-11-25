@@ -12,19 +12,23 @@ browser works out what's on from the clock.
 |---|---|---|
 | 13 | Creature Feature | Sci-fi and horror B-movies |
 | 17 | Juvie | Girl-gang and delinquent movies, 1950s teen guidance films |
+| 21 | Lab Coat | Mr. Wizard, Bell Science, Apollo films, The Computer Chronicles |
 | 29 | Ad Break | Vintage commercials |
 | 31 | Space Cadets | Space Patrol, Commando Cody, Flash Gordon |
 | 33 | Ringside | 1949–52 roller derby, women's wrestling, luchadora movies |
 | 35 | Prime Time Trash | Queen for a Day, Racket Squad, You Bet Your Life |
+| 45 | Jukebox | 1940s Soundies, Snader Telescriptions, early jazz shorts |
 | 61 | Drive-In | Monster movies so bad they're good, with trailers |
 | 63 | Space Babes | Cat-women, cave girls and B-movie bombshells |
 | 66 | Vice Squad | Reefer, cocaine and "sex hygiene" scare films |
+| 69 | Nylons & Heels | 18+. Irving Klaw / Bettie Page fetish reels, pin-up and strip reels, girdle and hosiery ads. 10 PM–4 AM only, with an age check |
+| 77 | Pre-Code | Racy early-30s Hollywood from before the censors arrived |
 | 88 | Burlesque | Strip-tease revues and cheesecake Soundies. 10 PM–4 AM only |
-| 99 | After Dark | 18+. Bettie Page / Irving Klaw fetish reels, early-60s nudie films, shockers. 10 PM–4 AM only, with an age check |
+| 99 | After Dark | 18+. Early-60s nudie and sexploitation films, Ed Wood, shockers. 10 PM–4 AM only, with an age check |
 
 Late-night channels show a test card outside their hours. Creature Feature and Ad
 Break come from Archive searches; the rest are hand-picked lists in
-`tools/lineup.mjs`. After Dark tops out at R-rated: GitHub Pages allows
+`tools/lineup.mjs`. The 18+ channels top out at R-rated: GitHub Pages allows
 non-pornographic nudity but not pornography, so nothing explicit goes on, and
 nothing where a performer or character could be a minor.
 

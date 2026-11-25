@@ -10,23 +10,23 @@ browser works out what's on from the clock.
 
 | Ch | Name | What's on |
 |---|---|---|
-| 3 | Inkwell | Public-domain cartoons |
-| 7 | Classroom | Educational and industrial films |
 | 13 | Creature Feature | Sci-fi and horror B-movies |
 | 17 | Juvie | Girl-gang and delinquent movies, 1950s teen guidance films |
-| 21 | Night Streets | Film noir |
 | 29 | Ad Break | Vintage commercials |
-| 42 | Kodachrome | Strangers' home movies |
-| 55 | Laugh Track | Old comedy shorts and features |
-| 61 | Drive-In | So-bad-they're-good movies, with trailers between features |
-| 64 | Cheap TV | Roller derby, wrestling, cheap space serials, Racket Squad, Groucho |
-| 99 | After Dark | 18+. Burlesque, Bettie Page / Irving Klaw fetish reels, vice films and early-60s nudie films. On air 10 PM–4 AM local time; a test card the rest of the day, and an age confirmation before it plays |
+| 31 | Space Cadets | Space Patrol, Commando Cody, Flash Gordon |
+| 33 | Ringside | 1949–52 roller derby, women's wrestling, luchadora movies |
+| 35 | Prime Time Trash | Queen for a Day, Racket Squad, You Bet Your Life |
+| 61 | Drive-In | Monster movies so bad they're good, with trailers |
+| 63 | Space Babes | Cat-women, cave girls and B-movie bombshells |
+| 66 | Vice Squad | Reefer, cocaine and "sex hygiene" scare films |
+| 88 | Burlesque | Strip-tease revues and cheesecake Soundies. 10 PM–4 AM only |
+| 99 | After Dark | 18+. Bettie Page / Irving Klaw fetish reels, early-60s nudie films, shockers. 10 PM–4 AM only, with an age check |
 
-Channels 3, 7, 13, 21, 29, 42 and 55 come from Archive searches. Juvie, Drive-In,
-Cheap TV and After Dark are hand-picked lists in `tools/build-channels.mjs`.
-After Dark tops out at R-rated: GitHub Pages allows non-pornographic nudity but
-not pornography, so nothing explicit goes on, and nothing where a performer or
-character could be a minor.
+Late-night channels show a test card outside their hours. Creature Feature and Ad
+Break come from Archive searches; the rest are hand-picked lists in
+`tools/lineup.mjs`. After Dark tops out at R-rated: GitHub Pages allows
+non-pornographic nudity but not pornography, so nothing explicit goes on, and
+nothing where a performer or character could be a minor.
 
 ## Files
 
@@ -35,7 +35,8 @@ character could be a minor.
 | `index.html` | The finished site. One file; the channel data is baked in. |
 | `src/template.html` | The page source. Edit this, not `index.html`. |
 | `data/channels.json` | The channel line-ups: Archive item ID, file, length, title, year. |
-| `tools/build-channels.mjs` | Searches the Archive and rebuilds `data/channels.json`. |
+| `tools/lineup.mjs` | The channel line-up: numbers, names, hours and every hand-picked video. |
+| `tools/build-channels.mjs` | Looks the line-up up on the Archive and writes `data/channels.json`. |
 | `tools/assemble.mjs` | Bakes `data/channels.json` into `src/template.html` → `index.html`. |
 
 ## Run it locally
@@ -50,8 +51,8 @@ Then open http://localhost:8765.
 
 ## Change the channels
 
-1. Edit the `CHANNELS` list at the top of `tools/build-channels.mjs`. Each `q` is
-   an archive.org search query, e.g. `collection:prelinger AND subject:space`.
+1. Edit `tools/lineup.mjs`. Hand-picked channels list Archive item IDs; searched
+   channels take an archive.org query, e.g. `collection:prelinger AND subject:space`.
 2. `node tools/build-channels.mjs` (takes a few minutes; it checks each video).
    To rebuild only some channels, name them: `node tools/build-channels.mjs drivein afterdark`.
 3. **Read through the titles it picked.** Search results include mislabeled,

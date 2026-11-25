@@ -1,134 +1,17 @@
 // Builds data/channels.json from the Internet Archive's search + metadata APIs.
+// The channel line-up lives in tools/lineup.mjs.
 //
 // Usage (from the project folder):
 //   node tools/build-channels.mjs              rebuild every channel
-//   node tools/build-channels.mjs drivein tv   rebuild only these channels, keep the rest as they are
+//   node tools/build-channels.mjs drivein vice rebuild only these channels, keep the rest as they are
+//   node tools/build-channels.mjs --refresh    look every video up again instead of reusing earlier lookups
 //   node tools/assemble.mjs                    then bake the data into index.html
 //
-// A channel either searches (q: an archive.org query) or lists hand-picked items (items: [...]).
 // Searched channels pull in junk, so always read the titles after a rebuild and add rejects to DROP.
-// hours: [start, end] makes a channel broadcast only between those local hours.
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { CHANNELS } from './lineup.mjs';
 
 const DEST = 'data/channels.json';
-
-// Hand-picked items: [archive.org identifier, display title, year].
-const AFTER_DARK = [
-  ['SoundieM', 'Soundie: Ten Pretty Girls', '1940s'],
-  ['Teaserama', 'Teaserama, with Bettie Page & Tempest Storm', '1955'],
-  ['SoundieF', 'Soundie: Reg Kehoe and His Marimba Queens', '1940'],
-  ['sex_madness', 'Sex Madness', '1938'],
-  ['ReeferMadnessTrailer', 'Trailer: Reefer Madness', ''],
-  ['reefer_madness1938', 'Reefer Madness', '1936'],
-  ['soundie_11', 'Soundie: Jiveroo', '1940s'],
-  ['varietease-1954', 'Varietease, with Lili St. Cyr', '1954'],
-  ['soundie_12', 'Soundie: Hollywood Boogie', '1946'],
-  ['SheShouldaSaidNo', 'She Shoulda Said ‘No’!', '1949'],
-  ['LampOfMemory', 'Soundie: Lamp of Memory', '1944'],
-  ['The_Cocaine_Fiends', 'The Cocaine Fiends', '1935'],
-  ['soundie_1', 'Soundie: The Hut Sut Song', '1941'],
-  ['Test_Tube_Babies_1948', 'Test Tube Babies', '1948'],
-  ['SoundieB', 'Soundie: Sweet Sue (Just You)', '1940s'],
-  ['Damaged_Lives', 'Damaged Lives', '1933'],
-  ['AssassinOfYouth_423', 'Assassin of Youth', '1937'],
-  ['BettyPageDressedInSatin', 'Bettie Page: Dressed in Satin', '1950s'],
-  ['glenorglenda_201305', 'Glen or Glenda', '1953'],
-  ['BettiePagepinUpBeautiesFight1950sFetishStagFilm', 'Irving Klaw: Pin-Up Beauties Fight, with Bettie Page', '1950s'],
-  ['Tonight_for_Sure_1962', 'Tonight for Sure', '1962'],
-  ['HumanPonyGirl50sIrvingKlawFetishStagFilm', 'Irving Klaw: Riding the Human Pony Girl', '1950s'],
-  ['Maniac', 'Maniac', '1934'],
-  ['BettyPageAndHerHighHeeledShoes', 'Bettie Page and Her High-Heeled Shoes', '1950s'],
-  ['Marihuana-the_Devils_Weed', 'Marihuana', '1936'],
-  ['BettiePageSpankedSlaveGirlRareBondageFetishStagFilm', 'Irving Klaw: Jungle Bettie, with Bettie Page', '1955'],
-  ['The_Naked_Witch_1964', 'The Naked Witch', '1964'],
-  ['ripped-clothing-fight', 'Irving Klaw: Clothing Ripped Off in Fight', '1950s'],
-  ['Narcotic1933EXPLOITATION', 'Narcotic', '1933'],
-];
-const DRIVE_IN = [
-  ['Plan9FromOuterSpaceTrailer', 'Trailer: Plan 9 from Outer Space', ''],
-  ['plan-9-from-outer-space', 'Plan 9 from Outer Space', '1959'],
-  ['RobotMonster-Trailer', 'Trailer: Robot Monster', ''],
-  ['robot-monster-1953', 'Robot Monster', '1953'],
-  ['ManosTheHandsofFate', 'Manos: The Hands of Fate', '1966'],
-  ['KillerShrews-Trailer', 'Trailer: The Killer Shrews', ''],
-  ['The_Killer_Shrews', 'The Killer Shrews', '1959'],
-  ['teenagers_from_outerspace', 'Teenagers from Outer Space', '1959'],
-  ['BrideOfTheMonster-Trailer', 'Trailer: Bride of the Monster', ''],
-  ['bride-of-the-monster-1955', 'Bride of the Monster', '1955'],
-  ['Beast_of_Yucca_Flats_movie', 'The Beast of Yucca Flats', '1961'],
-  ['Cat-womenOfTheMoon-Trailer', 'Trailer: Cat-Women of the Moon', ''],
-  ['CatWomenOfTheMoon', 'Cat-Women of the Moon', '1953'],
-  ['cco_attackofthegiantleeches', 'Attack of the Giant Leeches', '1959'],
-  ['TheWildWomenOfWongoTrailer', 'Trailer: The Wild Women of Wongo', ''],
-  ['The_Wild_Women_Of_Wongo', 'The Wild Women of Wongo', '1958'],
-  ['giant_gila_monster', 'The Giant Gila Monster', '1959'],
-  ['MesaOfLostWomenTrailer', 'Trailer: Mesa of Lost Women', ''],
-  ['MesaOfLostWomen', 'Mesa of Lost Women', '1953'],
-  ['The_Amazing_Transparent_Man', 'The Amazing Transparent Man', '1960'],
-  ['SantaClausConquerstheMartians1964', 'Santa Claus Conquers the Martians', '1964'],
-  ['fire-maidens-of-outer-space-1956_202512', 'Fire Maidens of Outer Space', '1956'],
-  ['TheAstoundingShe-monsterTrailer', 'Trailer: The Astounding She-Monster', ''],
-  ['the-astounding-she-monster_202311', 'The Astounding She-Monster', '1957'],
-  ['04-wrestling-women-vs-the-aztec-mummy-1964-dub', 'Wrestling Women vs. the Aztec Mummy', '1964'],
-  ['prehistoric-women-1950', 'Prehistoric Women', '1950'],
-  ['TheCreepingTerrorTrailer', 'Trailer: The Creeping Terror', ''],
-  ['TheCreepingTerror', 'The Creeping Terror', '1964'],
-  ['TheRobotVs.TheAztecMummylaMomiaAztecaControElRobotHumano1958-', 'The Robot vs. the Aztec Mummy', '1958'],
-  ['the-sinister-urge-1960-edward-d.-wood-jr.-ed-wood-cult-b-movie-full-movie', 'The Sinister Urge', '1960'],
-];
-const CHEAP_TV = [
-  ['1949-RollerDerby-NewYorkVsPhiladelphia', 'Roller Derby: New York vs. Philadelphia', '1949'],
-  ['space-patrol-s-01e-01-low-480x-360p', 'Space Patrol: Web of Arachna', '1950s'],
-  ['RacketSquadTheSaltedMine1951', 'Racket Squad: The Salted Mine', '1951'],
-  ['YulieBrynnerVsRoseRoman', 'Chicago Wrestling: Yulie Brynner vs. Rose Roman', '1950'],
-  ['commandocodyskymarshaloftheuniverses01e03cosmicvengeance', 'Commando Cody: Enemies of the Universe', '1955'],
-  ['You_Bet_Your_Life_Groucho', 'You Bet Your Life, with Groucho Marx', '1950s'],
-  ['1950-RollerDerby-NewJerseyVsPhiladelphia', 'Roller Derby: New Jersey vs. Philadelphia', '1950'],
-  ['rockyJonesSpaceRangerBeyondTheCurtainOfSpace1954', 'Rocky Jones, Space Ranger: Beyond the Curtain of Space', '1954'],
-  ['RacketSquadTheCaseOfTheTwoLittleCountryGirls', 'Racket Squad: The Two Little Country Girls', '1951'],
-  ['GracieAllenSpaceGirls', 'Burns and Allen: The Space Patrol Kids Visit', '1951'],
-  ['SpacePatrolS03e28MysteriousOceansInSpace', 'Space Patrol: Mysterious Oceans in Space', '1953'],
-  ['1952-RollerDerby-TheChiefsVsTheRedDevils_383', 'Roller Derby: The Chiefs vs. the Red Devils', '1952'],
-  ['TheSpaceAdventuresOfFlashGordon_981', 'The Space Adventures of Flash Gordon', '1954'],
-  ['RacketSquadKiteHigh', 'Racket Squad: Kite High', '1951'],
-  ['rockyJonesSpaceRangerRockysOdyssey1954', 'Rocky Jones, Space Ranger: Rocky’s Odyssey', '1954'],
-  ['Space-Patrol-TheDeadlyRayGun', 'Space Patrol: The Deadly Ray Gun', '1951'],
-  ['1950-RollerDerby-NewJerseyVsBrooklyn', 'Roller Derby: New Jersey vs. Brooklyn', '1950'],
-  ['RacketSquadAccidentallyOnPurpose', 'Racket Squad: Accidentally on Purpose', '1951'],
-  ['CommandoCodySkyMarshallOfTheUniversePart1_458', 'Commando Cody: Sky Marshal of the Universe, Part 1', '1955'],
-  ['RacketSquadTheBillOfSaleRacket', 'Racket Squad: The Bill of Sale Racket', '1951'],
-  ['Queen_For_A_Day', 'Queen for a Day', '1960'],
-  ['1958EpisodeOfqueenForADay', 'Queen for a Day', '1958'],
-  ['queenforaday1963', 'Queen for a Day', '1963'],
-];
-const JUVIE = [
-  ['TheViolentYears', 'The Violent Years', '1956'],
-  ['0248_Are_You_Popular_E00020_19_00_34_00', 'Are You Popular?', '1947'],
-  ['CoolHotRodA', 'Cool Hot Rod', '1953'],
-  ['TeenageDevilDolls', 'Teenage Devil Dolls', '1955'],
-  ['GoingSte1951', 'Going Steady?', '1951'],
-  ['HowMuchA1958', 'How Much Affection?', '1958'],
-  ['GirlGang1954', 'Girl Gang', '1954'],
-  ['ShyGuy1947', 'Shy Guy', '1947'],
-  ['last_date', 'Last Date', '1949'],
-  ['AgeofTur1953', 'Age of Turmoil', '1953'],
-  ['WhatAbou1955', 'What About Juvenile Delinquency?', '1955'],
-  ['DatingDo1949_201805', 'Dating: Do’s and Don’ts', '1949'],
-];
-
-const CHANNELS = [
-  { num: 3,  slug: 'toons',     name: 'Inkwell',          tag: 'Public-domain cartoons',        q: 'collection:classic_cartoons OR collection:vintage_cartoons', n: 50, max: 1800 },
-  { num: 7,  slug: 'classroom', name: 'Classroom',        tag: 'Educational & industrial films', q: 'collection:prelinger AND mediatype:movies', n: 30, max: 2400 },
-  { num: 13, slug: 'creature',  name: 'Creature Feature', tag: 'Sci-fi & horror B-movies',      q: 'collection:SciFi_Horror', n: 20, max: 7200 },
-  { num: 17, slug: 'juvie',     name: 'Juvie',            tag: 'Girl gangs, hot rods & going steady', items: JUVIE },
-  { num: 21, slug: 'noir',      name: 'Night Streets',    tag: 'Film noir',                     q: 'collection:Film_Noir', n: 20, max: 7200 },
-  { num: 29, slug: 'ads',       name: 'Ad Break',         tag: 'Vintage commercials',           q: 'collection:classic_tv_commercials', n: 40, max: 1800 },
-  { num: 42, slug: 'homemovies',name: 'Kodachrome',       tag: 'Strangers’ home movies',   q: 'collection:home_movies AND mediatype:movies', n: 30, max: 3600 },
-  { num: 55, slug: 'comedy',    name: 'Laugh Track',      tag: 'Old comedy shorts & features',  q: 'collection:Comedy_Films', n: 25, max: 7200 },
-  { num: 61, slug: 'drivein',   name: 'Drive-In',         tag: 'So bad they’re good',      items: DRIVE_IN },
-  { num: 64, slug: 'cheaptv',   name: 'Cheap TV',         tag: 'Roller derby, wrestling & tin-foil space operas', items: CHEAP_TV },
-  { num: 99, slug: 'afterdark', name: 'After Dark',       tag: 'Burlesque, fetish reels & vice films. 18+, 10 PM to 4 AM', items: AFTER_DARK, hours: [22, 4], adult: true },
-];
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 async function getJSON(url, tries = 3) {
@@ -204,7 +87,8 @@ async function buildChannel(ch) {
   const items = [];
   if (ch.items) {
     for (const [id, title, year] of ch.items) {
-      const it = await resolveItem(id, title, year);
+      const known = !REFRESH && CACHE.get(id);
+      const it = known ? { ...known, title, year } : await resolveItem(id, title, year);
       if (it) items.push(it);
     }
   } else {
@@ -228,8 +112,10 @@ async function buildChannel(ch) {
   return { ...meta, items };
 }
 
-const only = process.argv.slice(2);
+const REFRESH = process.argv.includes('--refresh');
+const only = process.argv.slice(2).filter((a) => !a.startsWith('--'));
 const old = existsSync(DEST) ? JSON.parse(readFileSync(DEST, 'utf8')) : [];
+const CACHE = new Map(old.flatMap((c) => c.items.map((i) => [i.id, i])));
 const out = [];
 for (const ch of CHANNELS) {
   const prev = old.find((c) => c.slug === ch.slug);

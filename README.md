@@ -10,9 +10,10 @@ browser works out what's on from the clock.
 
 | Ch | Name | What's on |
 |---|---|---|
+| 8 | Saturday Morning | 80s toy and cereal ad breaks (He-Man, Transformers, Cabbage Patch), Smokey Bear and Woodsy Owl PSAs, Superman, Clutch Cargo, Space Angel, Casper |
 | 13 | Creature Feature | Sci-fi and horror B-movies |
 | 17 | Juvie | Girl-gang and delinquent movies, 1950s teen guidance films |
-| 21 | Lab Coat | Mr. Wizard, Bell Science, Apollo films, The Computer Chronicles |
+| 21 | Lab Coat | Mr. Wizard, Bell Science, Apollo, Skylab, Voyager and Viking films, The Computer Chronicles |
 | 29 | Ad Break | Vintage commercials |
 | 31 | Space Cadets | Space Patrol, Commando Cody, Flash Gordon |
 | 33 | Ringside | 1949–52 roller derby, women's wrestling, luchadora movies |
@@ -22,12 +23,12 @@ browser works out what's on from the clock.
 | 61 | Drive-In | Monster movies so bad they're good, with trailers |
 | 63 | Space Babes | Cat-women, cave girls and B-movie bombshells |
 | 66 | Vice Squad | Reefer, cocaine and "sex hygiene" scare films |
-| 69 | Nylons & Heels | 18+. Irving Klaw / Bettie Page fetish reels, pin-up and strip reels (Blaze Starr, Tempest Storm, Dixie Evans), girdle and hosiery ads. 10 PM–4 AM only, with an age check |
+| 69 | Nylons & Heels | 18+. Irving Klaw / Bettie Page fetish reels, pin-up and strip reels (Blaze Starr, Tempest Storm, Dixie Evans), girdle and hosiery ads. Age check first |
 | 77 | Pre-Code | Racy early-30s Hollywood from before the censors arrived |
-| 88 | Burlesque | Strip-tease revues and cheesecake Soundies. 10 PM–4 AM only |
-| 99 | After Dark | 18+. Early-60s nudie and sexploitation films, Jayne Mansfield's uncut Too Hot to Handle, Ed Wood, shockers. 10 PM–4 AM only, with an age check |
+| 88 | Burlesque | Strip-tease revues and cheesecake Soundies |
+| 99 | After Dark | 18+. Early-60s nudie and sexploitation films, Jayne Mansfield's uncut Too Hot to Handle, Ed Wood, shockers. Age check first |
 
-Late-night channels show a test card outside their hours. Creature Feature and Ad
+Every channel runs 24/7. Creature Feature and Ad
 Break come from Archive searches; the rest are hand-picked lists in
 `tools/lineup.mjs`. The 18+ channels top out at R-rated: GitHub Pages allows
 non-pornographic nudity but not pornography, so nothing explicit goes on, and
@@ -37,12 +38,12 @@ nothing where a performer or character could be a minor.
 
 | File | What it is |
 |---|---|
-| `index.html` | The finished site. One file; the channel data is baked in. |
-| `src/template.html` | The page source. Edit this, not `index.html`. |
-| `data/channels.json` | The channel line-ups: Archive item ID, file, length, title, year. |
-| `tools/lineup.mjs` | The channel line-up: numbers, names, hours and every hand-picked video. |
-| `tools/build-channels.mjs` | Looks the line-up up on the Archive and writes `data/channels.json`. |
-| `tools/assemble.mjs` | Bakes `data/channels.json` into `src/template.html` → `index.html`. |
+| `index.html` | The finished site. One file; the channel data is baked in |
+| `src/template.html` | The page source. Edit this, not `index.html` |
+| `data/channels.json` | The channel line-ups: Archive item ID, file, length, title, year |
+| `tools/lineup.mjs` | The channel line-up: numbers, names, hours and every hand-picked video |
+| `tools/build-channels.mjs` | Looks the line-up up on the Archive and writes `data/channels.json` |
+| `tools/assemble.mjs` | Bakes `data/channels.json` into `src/template.html` → `index.html` |
 
 ## Run it locally
 

@@ -88,8 +88,8 @@ async function buildChannel(ch) {
   const items = [];
   if (ch.items) {
     for (const [id, title, year, want] of ch.items) {
-      const known = !REFRESH && CACHE.get(id);
-      const it = known && (!want || known.file === want) ? { ...known, title, year } : await resolveItem(id, title, year, undefined, want);
+      const known = !REFRESH && CACHE.get(want ? `${id}/${want}` : id);
+      const it = known ? { ...known, title, year } : await resolveItem(id, title, year, undefined, want);
       if (it) items.push(it);
     }
   } else {
@@ -116,7 +116,8 @@ async function buildChannel(ch) {
 const REFRESH = process.argv.includes('--refresh');
 const only = process.argv.slice(2).filter((a) => !a.startsWith('--'));
 const old = existsSync(DEST) ? JSON.parse(readFileSync(DEST, 'utf8')) : [];
-const CACHE = new Map(old.flatMap((c) => c.items.map((i) => [i.id, i])));
+// Earlier lookups, by item id and by id/file (for items that hold several videos).
+const CACHE = new Map(old.flatMap((c) => c.items.flatMap((i) => [[i.id, i], [`${i.id}/${i.file}`, i]])));
 const out = [];
 for (const ch of CHANNELS) {
   const prev = old.find((c) => c.slug === ch.slug);

@@ -163,7 +163,7 @@ a{color:var(--cyan)}
 <script type="application/json" id="data">__DATA__</script>
 <script>
 {
-const COLORS = {creature:'#22ff3a',juvie:'#c6ff00',ads:'#ff2a2a',spacecadets:'#00f0ff',ringside:'#ff9d00',primetime:'#ffee00',drivein:'#b388ff',spacebabes:'#ff2bd6',vice:'#ffffff',burlesque:'#ff8a5c',afterdark:'#ff5c8a',labcoat:'#7fffd4',jukebox:'#4d9bff',precode:'#e8c28a',nylons:'#e040fb',bombshell:'#ffb3d9'};
+const COLORS = {creature:'#22ff3a',juvie:'#c6ff00',ads:'#ff2a2a',spacecadets:'#00f0ff',ringside:'#ff9d00',primetime:'#ffee00',drivein:'#b388ff',spacebabes:'#ff2bd6',vice:'#ffffff',burlesque:'#ff8a5c',afterdark:'#ff5c8a',labcoat:'#7fffd4',jukebox:'#4d9bff',precode:'#e8c28a',nylons:'#e040fb',bombshell:'#ffb3d9',saturday:'#ff7043'};
 const EPOCH = Date.UTC(2025, 0, 1) / 1000;          // every viewer counts from the same moment
 const CH = JSON.parse(document.getElementById('data').textContent);
 for (const ch of CH) {
@@ -173,7 +173,8 @@ for (const ch of CH) {
 const $ = id => document.getElementById(id);
 const vid = $('vid'), screen = $('screen'), card = $('card'), osd = $('osd');
 const now = () => Date.now() / 1000;
-const bad = new Set();
+const bad = new Set();   // keyed by item id + file: one Archive item can hold several episodes
+const key = it => it.id + '/' + it.file;
 let cur = 0, sound = false, userMuted = false, playing = null, tok = 0, osdT, digitBuf = '', digitT, watchdog, standbyT;
 
 let adultOK = false;
@@ -193,7 +194,7 @@ function at(ch, t) {
 // Same, but skip tapes that failed to load for this viewer.
 function resolve(ch, t) {
   let { i, off } = at(ch, t), n = 0;
-  while (bad.has(ch.items[i].id) && n++ < ch.items.length) { i = (i + 1) % ch.items.length; off = off % ch.items[i].dur; }
+  while (bad.has(key(ch.items[i])) && n++ < ch.items.length) { i = (i + 1) % ch.items.length; off = off % ch.items[i].dur; }
   return { i, start: t - off };
 }
 // Part-time channels (hours: [start, end], local time) only broadcast inside that window.
@@ -293,8 +294,8 @@ function standby(my) {
 function fail(my) {
   if (my !== tok) return;
   clearTimeout(watchdog);
-  bad.add(playing.it.id);
-  try { const m = JSON.parse(localStorage.getItem('re-bad') || '{}'); m[playing.it.id] = Date.now(); localStorage.setItem('re-bad', JSON.stringify(m)); } catch {}
+  bad.add(key(playing.it));
+  try { const m = JSON.parse(localStorage.getItem('re-bad') || '{}'); m[key(playing.it)] = Date.now(); localStorage.setItem('re-bad', JSON.stringify(m)); } catch {}
   showCard('BAD TAPE. SKIPPING AHEAD...');
   setTimeout(() => { if (my === tok) play(); }, 1200);
 }

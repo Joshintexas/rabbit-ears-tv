@@ -147,6 +147,21 @@ const LAB_COAT = [
   ['ccs01e08utilities', 'Computer Chronicles: Utilities', '1984'],
   ['WatchMrWizard', 'Watch Mr. Wizard: Cereal Institute Film', '1950s'],
   ['Apollo1116mmOnboardFilm', 'Apollo 11: 16mm Onboard Film', '1969'],
+  ['alphabet_conspiracy', 'Bell Science: The Alphabet Conspiracy', '1959'],
+  ['Apollo15And1616mmOnboardFilm', 'Apollo 15 & 16: 16mm Onboard Film', '1971–72'],
+  ['skylab_zero-g', 'Skylab: Zero G', '1973'],
+  ['CCRP-1107A-BS', 'Computer Chronicles: The Internet', '1993'],
+  ['gov.archives.arc.59760', 'Voyager 2: Rendezvous with Saturn', '1981'],
+  ['bacteria_friend_and_foe', 'Bacteria: Friend and Foe', '1950s'],
+  ['gov.archives.arc.1157922', 'Space Shuttle: A Remarkable Flying Machine', '1981'],
+  ['skylab_gyroscopes_in_space', 'Skylab: Gyroscopes in Space', '1973'],
+  ['marsthevikingmission', 'Mars: The Viking Mission', '1979'],
+  ['CCRP-1230A-BS', 'Computer Chronicles: PC Video', '1995'],
+  ['200634_The_Growth_of_Plants', 'The Growth of Plants', '1940s'],
+  ['gov.ntis.ava03129vnb1', 'Time of Apollo', '1975'],
+  ['skylab_magnetism_in_space', 'Skylab: Magnetism in Space', '1973'],
+  ['voyager_grand_tour', 'Voyager: The Grand Tour', '1990'],
+  ['starfinder_17_hubble_instruments', 'Starfinder: Hubble’s Instruments', '1990'],
 ];
 
 // Racy Hollywood from before the 1934 Production Code clamped down.
@@ -211,6 +226,45 @@ const BOMBSHELL = [
   ['DanceHallRacket', 'Dance Hall Racket', '1953'],
 ];
 
+// 80s Saturday-morning feel: toy and cereal ad breaks, Forest Service PSAs, and free cartoons
+// (the 80s shows themselves are still under copyright).
+const SATURDAY = [
+  ['rainbow-bright-and-he-man-1985-commercials', 'Ads: Rainbow Brite & He-Man Breaks', '1985'],
+  ['superman_1941', 'Superman', '1941'],
+  ['1985-hasbro-transformers-christmas-alex-karras-these-robots-are-hot-tv-commercial', 'Ad: Transformers', '1985'],
+  ['clutchcargocartooonscollection', 'Clutch Cargo: Air Race', '1959', 'CLUTCH CARGO Air Race.mp4'],
+  ['WoodsyOwlPSACollection1965-1985', 'PSAs: Woodsy Owl', '1965–85'],
+  ['SpaceAngelCartoonsCollection', 'Space Angel: Cosmic Combat', '1962', 'SpaceAngelCosmicCombat.mp4'],
+  ['Vintage_Commercials_Advertisements_80s', 'Ads: CBS Saturday Morning', '1984', 'CBS Commercials 04-14-84 A.mp4'],
+  ['Vintage_Commercials_Advertisements_80s', 'Ads: CBS Saturday Morning', '1984', 'CBS Commercials 04-14-84 B.mp4'],
+  ['Vintage_Commercials_Advertisements_80s', 'Ads: CBS Saturday Morning', '1984', 'CBS Commercials 04-14-84 C.mp4'],
+  ['noveltoon_casper_tfg_theres_good_boos_tonight', 'Casper: There’s Good Boos Tonight', '1948'],
+  ['TransformersAustralianToyCommercials1987', 'Ads: Transformers (Australia)', '1987'],
+  ['superman_the_mechanical_monsters', 'Superman: The Mechanical Monsters', '1941'],
+  ['DKJrCereal_6-16-84', 'Ad: Donkey Kong Jr. Cereal', '1984'],
+  ['clutchcargocartooonscollection', 'Clutch Cargo: Crop Dusters', '1959', 'CLUTCH CARGO Crop Dusters.mp4'],
+  ['jan-9th-1985-channel-5-and-13-new-york-he-man-raccons-on-ice-she-ra-commercials', 'Ads: He-Man, She-Ra & ThunderCats Breaks', '1985'],
+  ['superman_electric_earthquake', 'Superman: Electric Earthquake', '1942'],
+  ['cabbage-patch-kids-commercial-collection', 'Ad: Cabbage Patch Kids', '1983', "1980's Cabbage Patch Kids Ads/Cabbage Patch Kids Commercial 1983.mp4"],
+  ['cabbage-patch-kids-commercial-collection', 'Ad: Cabbage Patch Kids', '1985', "1980's Cabbage Patch Kids Ads/Cabbage Patch Kids Commercial 1985 a.mp4"],
+  ['SpaceAngelCartoonsCollection', 'Space Angel: Expedition to a New Moon', '1962', 'SpaceAngelExpeditionToANewMoon.mp4'],
+  ['SmokeyBearFirePreventionPSAs1960-1980', 'PSAs: Smokey Bear', '1960–80'],
+  ['mr.-bug-goes-to-town-1941', 'Mr. Bug Goes to Town', '1941'],
+  ['G11987', 'Ads: Transformers Headmasters & Targetmasters', '1987'],
+  ['clutchcargocartooonscollection', 'Clutch Cargo: Mister Abominable', '1959', 'CLUTCH CARGO Mister Abominable.mp4'],
+  ['80-s-commercials-vol-4.-title-1', 'Ads: 80s Toy Commercials', '1980s'],
+  ['superman_eleventh_hour', 'Superman: Eleventh Hour', '1942'],
+  ['Vintage_Commercials_Advertisements_80s', 'Ads: ABC Saturday Morning', '1987', 'ABC Commercials 07_25_87 A.mp4'],
+  ['Vintage_Commercials_Advertisements_80s', 'Ads: ABC Saturday Morning', '1987', 'ABC Commercials 07_25_87 B.mp4'],
+  ['casper-the-friendly-ghost-boo-moon-1953', 'Casper: Boo Moon', '1953'],
+  ['80s-90s-toy-commercial-compilation-nostalgia-720p', 'Ads: Teddy Ruxpin, Micro Machines & More', '1980s–90s'],
+  ['SpaceAngelCartoonsCollection', 'Space Angel: The Fugitives', '1962', 'SpaceAngelTheFugitives.mp4'],
+  ['Vintage_Commercials_Advertisements_80s', 'Ads: During Muppet Babies', '1980s', '1 80s Adverts Muppet Babies CBS source.mp4'],
+  ['Superman_The_Magnetic_Telescope', 'Superman: The Magnetic Telescope', '1942'],
+  ['rialto.0002', 'PSA: No Smoking', '1979'],
+  ['clutchcargocartooonscollection', 'Clutch Cargo: The Missing Mermaid', '1959', 'Clutch Cargo The Missing Mermaid.mp4'],
+];
+
 const JUVIE = [
   ['TheViolentYears', 'The Violent Years', '1956'],
   ['0248_Are_You_Popular_E00020_19_00_34_00', 'Are You Popular?', '1947'],
@@ -226,12 +280,12 @@ const JUVIE = [
   ['DatingDo1949_201805', 'Dating: Do’s and Don’ts', '1949'],
 ];
 
-const LATE = [22, 4];   // 10 PM to 4 AM, viewer's local time
 
 export const CHANNELS = [
+  { num: 8,  slug: 'saturday',    name: 'Saturday Morning', tag: '80s toy & cereal ads, Superman, Clutch Cargo & Space Angel', items: SATURDAY },
   { num: 13, slug: 'creature',    name: 'Creature Feature', tag: 'Sci-fi & horror B-movies',                    q: 'collection:SciFi_Horror', n: 20, max: 7200 },
   { num: 17, slug: 'juvie',       name: 'Juvie',            tag: 'Girl gangs, hot rods & going steady',         items: JUVIE },
-  { num: 21, slug: 'labcoat',     name: 'Lab Coat',         tag: 'Mr. Wizard, Bell Science, Apollo & Computer Chronicles', items: LAB_COAT },
+  { num: 21, slug: 'labcoat',     name: 'Lab Coat',         tag: 'Mr. Wizard, Bell Science, NASA & Computer Chronicles', items: LAB_COAT },
   { num: 29, slug: 'ads',        name: 'Ad Break',         tag: 'Vintage commercials',                         q: 'collection:classic_tv_commercials', n: 40, max: 1800 },
   { num: 31, slug: 'spacecadets', name: 'Space Cadets',     tag: 'Tin-foil space serials from early TV',        items: SPACE_CADETS },
   { num: 33, slug: 'ringside',    name: 'Ringside',         tag: 'Roller derby, wrestling & luchadoras',        items: RINGSIDE },
@@ -241,8 +295,8 @@ export const CHANNELS = [
   { num: 61, slug: 'drivein',    name: 'Drive-In',         tag: 'Monster movies so bad they’re good',          items: DRIVE_IN },
   { num: 63, slug: 'spacebabes',  name: 'Space Babes',      tag: 'Cat-women, cave girls & B-movie bombshells',  items: SPACE_BABES },
   { num: 66, slug: 'vice',        name: 'Vice Squad',       tag: 'Reefer, cocaine & “sex hygiene” scare films', items: VICE_SQUAD },
-  { num: 69, slug: 'nylons',      name: 'Nylons & Heels',   tag: 'Stockings, girdles, pin-ups & Irving Klaw fetish reels. 18+, 10 PM to 4 AM', items: NYLONS, hours: LATE, adult: true },
+  { num: 69, slug: 'nylons',      name: 'Nylons & Heels',   tag: 'Stockings, girdles, pin-ups & Irving Klaw fetish reels. 18+', items: NYLONS, adult: true },
   { num: 77, slug: 'precode',     name: 'Pre-Code',         tag: 'Racy Hollywood from before the censors arrived', items: PRE_CODE },
-  { num: 88, slug: 'burlesque',  name: 'Burlesque',        tag: 'Strip-tease revues & cheesecake Soundies, 10 PM to 4 AM', items: BURLESQUE, hours: LATE },
-  { num: 99, slug: 'afterdark',   name: 'After Dark',       tag: 'Fetish reels, nudie films & shockers. 18+, 10 PM to 4 AM', items: AFTER_DARK, hours: LATE, adult: true },
+  { num: 88, slug: 'burlesque',  name: 'Burlesque',        tag: 'Strip-tease revues & cheesecake Soundies', items: BURLESQUE },
+  { num: 99, slug: 'afterdark',   name: 'After Dark',       tag: 'Fetish reels, nudie films & shockers. 18+', items: AFTER_DARK, adult: true },
 ];

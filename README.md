@@ -17,14 +17,15 @@ browser works out what's on from the clock.
 | 31 | Space Cadets | Space Patrol, Commando Cody, Flash Gordon |
 | 33 | Ringside | 1949–52 roller derby, women's wrestling, luchadora movies |
 | 35 | Prime Time Trash | Queen for a Day, Racket Squad, You Bet Your Life |
+| 38 | Bombshell | Marilyn Monroe, Jayne Mansfield, jungle sirens, swamp women and taxi dancers |
 | 45 | Jukebox | 1940s Soundies, Snader Telescriptions, early jazz shorts |
 | 61 | Drive-In | Monster movies so bad they're good, with trailers |
 | 63 | Space Babes | Cat-women, cave girls and B-movie bombshells |
 | 66 | Vice Squad | Reefer, cocaine and "sex hygiene" scare films |
-| 69 | Nylons & Heels | 18+. Irving Klaw / Bettie Page fetish reels, pin-up and strip reels, girdle and hosiery ads. 10 PM–4 AM only, with an age check |
+| 69 | Nylons & Heels | 18+. Irving Klaw / Bettie Page fetish reels, pin-up and strip reels (Blaze Starr, Tempest Storm, Dixie Evans), girdle and hosiery ads. 10 PM–4 AM only, with an age check |
 | 77 | Pre-Code | Racy early-30s Hollywood from before the censors arrived |
 | 88 | Burlesque | Strip-tease revues and cheesecake Soundies. 10 PM–4 AM only |
-| 99 | After Dark | 18+. Early-60s nudie and sexploitation films, Ed Wood, shockers. 10 PM–4 AM only, with an age check |
+| 99 | After Dark | 18+. Early-60s nudie and sexploitation films, Jayne Mansfield's uncut Too Hot to Handle, Ed Wood, shockers. 10 PM–4 AM only, with an age check |
 
 Late-night channels show a test card outside their hours. Creature Feature and Ad
 Break come from Archive searches; the rest are hand-picked lists in

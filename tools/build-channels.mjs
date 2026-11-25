@@ -57,10 +57,11 @@ async function reachable(id, file) {
 }
 
 // Looks up one item and returns a playlist entry, or null if it has no playable, reachable file.
-async function resolveItem(id, title, year, max = 4 * 3600) {
+// `want` names one file when an item holds several videos (bonus features, other cuts).
+async function resolveItem(id, title, year, max = 4 * 3600, want) {
   const md = await getJSON(`https://archive.org/metadata/${encodeURIComponent(id)}`);
   if (!md?.files || md.is_dark) { console.error(`  missing: ${id}`); return null; }
-  const f = pickFile(md.files);
+  const f = pickFile(want ? md.files.filter((x) => x.name === want) : md.files);
   if (!f || f.len < 20 || f.len > max) { console.error(`  no playable file: ${id}`); return null; }
   if (!(await reachable(id, f.name))) { console.error(`  offline, skipped: ${id}`); return null; }
   return { id, file: f.name, dur: f.len, title, year };
@@ -86,9 +87,9 @@ const norm = (t) => t.toLowerCase().replace(/\(.*?\)/g, '').replace(/\bthe\b/g, 
 async function buildChannel(ch) {
   const items = [];
   if (ch.items) {
-    for (const [id, title, year] of ch.items) {
+    for (const [id, title, year, want] of ch.items) {
       const known = !REFRESH && CACHE.get(id);
-      const it = known ? { ...known, title, year } : await resolveItem(id, title, year);
+      const it = known && (!want || known.file === want) ? { ...known, title, year } : await resolveItem(id, title, year, undefined, want);
       if (it) items.push(it);
     }
   } else {

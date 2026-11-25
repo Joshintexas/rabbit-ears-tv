@@ -163,6 +163,9 @@ const AFTER_DARK = [
   ['Tonight_for_Sure_1962', 'Tonight for Sure', '1962'],
   ['Maniac', 'Maniac', '1934'],
   ['satan-in-high-heels-1962_202603', 'Satan in High Heels', '1962'],
+  ['too-hot-to-handle-1960-the-pink-flamingo-cut', 'Trailer: Too Hot to Handle', '', '1Too Hot to Handle 1960 The Pink Flamingo Cut Trailer.mp4'],
+  ['too-hot-to-handle-1960-the-pink-flamingo-cut', 'Too Hot to Handle, with Jayne Mansfield', '1960', '1Too Hot to Handle 1960 The Pink Flamingo Cut.mp4'],
+  ['sinema-trailer_shanty-tramp', 'Trailer: Shanty Tramp', '1967'],
   ['The_Naked_Witch_1964', 'The Naked Witch', '1964'],
   ['Marihuana-the_Devils_Weed', 'Marihuana', '1936'],
   ['NUDEONTHEMOONTrailer', 'Trailer: Nude on the Moon', ''],
@@ -191,7 +194,21 @@ const NYLONS = [
   ['PinUpGirl', 'Pin Up Girl, with Carole Landis', '1943'],
   ['ripped-clothing-fight', 'Irving Klaw: Clothing Ripped Off in Fight', '1950s'],
   ['jane-russell-playtex-bra-1980-tv-commercial', 'Ad: Jane Russell for Playtex', '1980'],
+  ['tempest-storm-1952', 'Tempest Storm', '1952'],
+  ['UnionSqu1950', 'Newsreel: Fashion Show in Union Square', '1950'],
+  ['StripperDixieEvans', 'Dixie Evans, the Marilyn of Burlesque', '1950s'],
   ['bettie-page-assorted-films', 'Irving Klaw: Teaser Girl, with Bettie Page', '1950s'],
+];
+
+// Blonde bombshells, jungle girls and bad girls. Nothing with nudity: this one is on all day.
+const BOMBSHELL = [
+  ['ladies-of-the-chorus-free-movie-marilyn-monroe-adele-jergens', 'Ladies of the Chorus, with Marilyn Monroe', '1948'],
+  ['she_gods_of_shark_reef', 'She Gods of Shark Reef', '1958'],
+  ['FemJungle', 'Female Jungle, with Jayne Mansfield', '1956'],
+  ['JungleSiren', 'Jungle Siren, with Ann Corio', '1942'],
+  ['RC_SwampWomen', 'Swamp Women', '1955'],
+  ['PrehistoricWomen_514', 'Prehistoric Women', '1950'],
+  ['DanceHallRacket', 'Dance Hall Racket', '1953'],
 ];
 
 const JUVIE = [
@@ -219,6 +236,7 @@ export const CHANNELS = [
   { num: 31, slug: 'spacecadets', name: 'Space Cadets',     tag: 'Tin-foil space serials from early TV',        items: SPACE_CADETS },
   { num: 33, slug: 'ringside',    name: 'Ringside',         tag: 'Roller derby, wrestling & luchadoras',        items: RINGSIDE },
   { num: 35, slug: 'primetime',   name: 'Prime Time Trash', tag: 'Sob-story game shows & con-man crime TV',     items: PRIME_TIME_TRASH },
+  { num: 38, slug: 'bombshell',   name: 'Bombshell',        tag: 'Marilyn, Jayne, jungle sirens & swamp women', items: BOMBSHELL },
   { num: 45, slug: 'jukebox',     name: 'Jukebox',          tag: 'Soundies, Snader Telescriptions & early jazz shorts', items: JUKEBOX },
   { num: 61, slug: 'drivein',    name: 'Drive-In',         tag: 'Monster movies so bad they’re good',          items: DRIVE_IN },
   { num: 63, slug: 'spacebabes',  name: 'Space Babes',      tag: 'Cat-women, cave girls & B-movie bombshells',  items: SPACE_BABES },
